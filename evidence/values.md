@@ -28,10 +28,13 @@ teammate wants their own copy.
 | asm-DB-A subnet ID | `subnet-0bd19aa5bb9b8e6be` (10.0.4.0/24) |
 | asm-DB-B subnet ID | `subnet-07332949cb37af58c` (10.0.5.0/24) |
 
-## Stage 03, gateways
+## Stage 03, gateways and route tables
 
 | Item | Value |
 |---|---|
+| asm-RT-Public | `rtb-0dfa185316f397b83` (asm-Public-A, asm-Public-B) |
+| asm-RT-App | `rtb-076d8e7e28263d072` (asm-App-A, asm-App-B) |
+| asm-RT-DB | `rtb-0df413343feabd360` (asm-DB-A, asm-DB-B) |
 | Internet gateway ID | igw- |
 | NAT gateway ID | nat- |
 | Elastic IP | |
