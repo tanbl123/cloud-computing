@@ -85,6 +85,39 @@ these from the application subnets means the database has its own route table an
 boundary, and it makes the security group rules easy to reason about: the database accepts traffic
 from the application security group and from nothing else.
 
+The address plan is set out below. Every subnet is repeated in both Availability Zones so that no
+tier depends on a single zone.
+
+| Subnet | CIDR | AZ | Type | Route table | What it holds |
+|---|---|---|---|---|---|
+| `asm-Public-A` | 10.0.0.0/24 | us-east-1a | Public | `asm-RT-Public` | ALB node, NAT gateway |
+| `asm-Public-B` | 10.0.1.0/24 | us-east-1b | Public | `asm-RT-Public` | ALB node |
+| `asm-App-A` | 10.0.2.0/24 | us-east-1a | Private | `asm-RT-App` | Auto Scaling web instances |
+| `asm-App-B` | 10.0.3.0/24 | us-east-1b | Private | `asm-RT-App` | Auto Scaling web instances |
+| `asm-DB-A` | 10.0.4.0/24 | us-east-1a | Private | `asm-RT-DB` | RDS subnet group |
+| `asm-DB-B` | 10.0.5.0/24 | us-east-1b | Private | `asm-RT-DB` | RDS subnet group |
+
+What makes a subnet public or private is not the name but the route table attached to it, so those
+are given in full:
+
+| Route table | Destination | Target | Associated subnets |
+|---|---|---|---|
+| `asm-RT-Public` | 10.0.0.0/16 | local | `asm-Public-A`, `asm-Public-B` |
+| | 0.0.0.0/0 | `asm-IGW` (internet gateway) | |
+| `asm-RT-App` | 10.0.0.0/16 | local | `asm-App-A`, `asm-App-B` |
+| | 0.0.0.0/0 | `asm-NAT` (NAT gateway) | |
+| `asm-RT-DB` | 10.0.0.0/16 | local | `asm-DB-A`, `asm-DB-B` |
+
+The database route table is the one worth reading carefully, because **its significance is what is
+absent**. It carries only the automatic local route, so there is no path from the database subnets
+to the internet in either direction. This is a stronger guarantee than a security group rule,
+because a security group can be widened by a later edit whereas a missing route means the packets
+have nowhere to go. Section 6.5 returns to this as the primary C5 evidence.
+
+*(These tables state the design; figures SEC-1 and HA-1 prove it was built. Keep both, since the
+route table console view is hard to read at screenshot size and the missing default route on
+`asm-RT-DB` is easier to see stated than photographed.)*
+
 > **Adjust this paragraph to what you actually did.** If the lab budget or service restrictions
 > prevented you from running a NAT gateway, you most likely placed the application instances in the
 > public subnets instead. That is a legitimate choice in a cost-constrained proof of concept, and
