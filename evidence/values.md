@@ -35,9 +35,10 @@ teammate wants their own copy.
 | asm-RT-Public | `rtb-0dfa185316f397b83` (asm-Public-A, asm-Public-B) |
 | asm-RT-App | `rtb-076d8e7e28263d072` (asm-App-A, asm-App-B) |
 | asm-RT-DB | `rtb-0df413343feabd360` (asm-DB-A, asm-DB-B) |
-| Internet gateway ID | igw- |
-| NAT gateway ID | nat- |
-| Elastic IP | |
+| Internet gateway ID | `igw-02e886e8c91c2322d` (Attached) |
+| NAT gateway ID | `nat-01ff1582e8b77e903` (Available, in asm-Public-A, private 10.0.0.71) |
+| Elastic IP (NAT public) | 52.73.159.122 |
+| NAT created | 1 Sep 2026 16:25 GMT+8 — billing starts here |
 
 ## Stage 04 and 05, security groups
 
