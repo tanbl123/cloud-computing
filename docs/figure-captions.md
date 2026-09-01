@@ -8,6 +8,20 @@ A caption should say what the image shows **and what it proves**. "Subnets" is a
 
 ---
 
+## Architecture diagram
+
+**Figure A.** *(Evidence HA-1)* Target architecture of the student-records web application in
+`us-east-1`. The VPC `asm-VPC` is divided into three tiers, each repeated in `us-east-1a` and
+`us-east-1b`: public subnets carrying the Application Load Balancer, private application subnets
+carrying the Auto Scaling group, and private database subnets carrying Amazon RDS. The database
+subnets have no route to the internet, so the database is unreachable from outside the VPC by
+routing rather than only by security group rules. Application instances reach AWS service endpoints
+outbound through the NAT gateway, and retrieve their database credentials from AWS Secrets Manager
+at runtime using the IAM role attached to their instance profile, so no password is stored in the
+application code or in the machine image.
+
+Place this as the first figure in section 4, before the design rationale.
+
 ## Stage 02 — VPC and subnets
 
 **Figure 1.** *(Evidence HA-1)* The six subnets of `asm-VPC`, showing three tiers distributed across
