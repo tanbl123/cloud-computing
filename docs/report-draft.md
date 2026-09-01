@@ -1,11 +1,10 @@
-# BMIT3273 Cloud Computing (202605) — Report Content Draft
+# BMIT3273 Cloud Computing (202605): Report Content Draft
 
 > **How to use this file.** This is drafting material for the Google Doc skeleton, written to
 > match the section numbering already in the document. Everything in `[SQUARE BRACKETS]` must be
 > replaced with a real value taken from your own AWS Academy lab account. Every figure reference
 > (F-1, LB-1, SC-2, …) must point at a screenshot you actually captured. Text that describes a
-> setting you did not configure should be deleted, not reworded — an unsupported claim costs more
-> marks than an omission.
+> setting you did not configure should be deleted, not reworded. An unsupported claim costs more marks than an omission.
 >
 > **Assumed design.** The draft assumes the architecture below. If your build differs, change the
 > numbers here first, then the prose will still hold:
@@ -37,9 +36,7 @@ demand rises. A single fault or a single busy afternoon is enough to make the se
 
 This report documents a proof of concept that our group built in the AWS Academy Lab Project –
 Cloud Web Application Builder environment to address that problem. The deliverable is a working
-student-records application that supports the four record operations the admissions staff depend
-on — viewing, adding, modifying, and deleting student records — deployed on an architecture that
-distributes traffic across multiple servers, adds and removes servers automatically as load
+student-records application that supports the four record operations the admissions staff depend on: viewing, adding, modifying, and deleting student records. It is deployed on an architecture that distributes traffic across multiple servers, adds and removes servers automatically as load
 changes, keeps the database off the public internet, and stores its database credentials outside
 the application code.
 
@@ -80,8 +77,7 @@ else in these subnets keeps the internet-facing surface of the system as small a
 
 The **private application subnets** hold the EC2 instances that run the application. These subnets
 have no route to the internet gateway, so the instances cannot be reached directly from the
-internet no matter what their security group allows — the only path to them is through the load
-balancer. `[Outbound access for package installation and Secrets Manager calls is provided by a NAT
+internet no matter what their security group allows; the only path to them is through the load balancer. `[Outbound access for package installation and Secrets Manager calls is provided by a NAT
 gateway in the public subnet.]`
 
 The **private database subnets** hold the RDS instance through its DB subnet group. Separating
@@ -96,8 +92,7 @@ from the application security group and from nothing else.
 > replacement rationale is: *"NAT gateway charges accrue hourly regardless of traffic and would
 > have consumed a disproportionate share of the lab budget, so the application instances were
 > placed in the public subnets with their security group restricted to accept traffic only from the
-> load balancer's security group. This preserves the practical effect of the private tier — no
-> direct inbound access from the internet — at no additional cost, while the database remains in
+> load balancer's security group. This preserves the practical effect of the private tier (no direct inbound access from the internet) at no additional cost, while the database remains in
 > genuinely private subnets."* Then make sure your diagram matches.
 
 Spreading each tier across two Availability Zones is the single most important decision in the
@@ -127,9 +122,7 @@ tested. This removes configuration drift as a source of failure.
 ### 4.3 Database tier
 
 We chose Amazon RDS for MySQL over continuing to run MySQL on an EC2 instance. The managed service
-handles patching, backups, and recovery, and it separates the database's lifecycle from the
-application servers' — which is precisely what allows the application tier to be replaced freely by
-Auto Scaling. Keeping the database on one of the application instances would have made every
+handles patching, backups, and recovery, and it separates the database's lifecycle from the application servers'. That separation is precisely what allows the application tier to be replaced freely by Auto Scaling. Keeping the database on one of the application instances would have made every
 scaling event a risk to the data.
 
 The instance is `[db.t3.micro]` in a single Availability Zone, as the assignment scope permits.
@@ -186,8 +179,7 @@ periods and spend them during short bursts, so we are not paying continuously fo
 only needed occasionally.
 
 The Auto Scaling **minimum of `[2]`** is set by availability rather than by load. One instance
-would be sufficient for baseline traffic, but it would also mean that losing a single instance —
-or a single Availability Zone — takes the application offline until a replacement finishes booting.
+would be sufficient for baseline traffic, but it would also mean that losing a single instance, or a single Availability Zone, takes the application offline until a replacement finishes booting.
 Two instances in two zones is the smallest configuration that survives that failure, so the second
 instance is the cost of the availability requirement, not spare capacity.
 
@@ -197,9 +189,9 @@ traffic spike, a runaway script, or a load test can cost. We set it from our loa
 maximum allows headroom above that.
 
 The database is sized at `[db.t3.micro]` because the working set is small and the query pattern is
-simple record lookups and single-row writes. Storage is provisioned at `[20 GB]` — the minimum that
-comfortably holds the dataset — because RDS storage is billed on what is provisioned, not what is
-used.
+simple record lookups and single-row writes. Storage is provisioned at `[20 GB]`, the minimum that
+comfortably holds the dataset, because RDS storage is billed on what is provisioned rather than on
+what is used.
 
 ### 5.3 Cost trade-offs we accepted
 
@@ -258,13 +250,11 @@ one application with no path-based routing requirement, no additional listener r
 The target group registers instances on port `[80]` with a health check on `[path /]`, considering
 a target healthy after `[2]` consecutive successful checks at `[30]`-second intervals and unhealthy
 after `[2]` failures. The health check is the mechanism that connects load balancing to
-availability: the load balancer routes only to targets currently passing it, so an instance that
-fails — whether through an application error or the loss of its Availability Zone — is removed from
-rotation automatically, without a person intervening (Amazon Web Services, n.d.-c).
+availability: the load balancer routes only to targets currently passing it, so an instance that fails, whether through an application error or the loss of its Availability Zone, is removed from rotation automatically, without a person intervening (Amazon Web Services, n.d.-c).
 
 Figure LB-2 shows `[N]` registered targets, all reporting *healthy*, distributed across both
 Availability Zones. Distribution was confirmed during the load test described in Section 6.7:
-`[state how you confirmed it — for example, the CloudWatch NetworkIn or CPUUtilization metric rose
+`[state how you confirmed it; for example, the CloudWatch NetworkIn or CPUUtilization metric rose
 on both instances simultaneously, or the per-instance request count in the target group metrics
 showed comparable volumes]`.
 
@@ -299,8 +289,7 @@ back in to N instances after the cooldown period.]`
 
 > **On scale-in evidence.** Scale-in is deliberately slower than scale-out, so you may need to leave
 > the environment idle for 10–15 minutes after the load test to capture it. If you could not
-> observe it within the session, say so explicitly rather than implying you did — the rubric says
-> *"where available"*.
+> observe it within the session, say so explicitly rather than implying you did. The rubric says *"where available"*.
 
 ### 6.4 C4 Highly Available
 
@@ -319,8 +308,7 @@ carrying the database. This limits the blast radius of a compromise or misconfig
 tier.
 
 **Decoupled data tier.** Moving the database out of the application instance and into RDS is what
-makes the application tier disposable. Any instance can be terminated at any time — by a scaling
-event, an instance failure, or a deployment — without data loss, because no instance owns any data.
+makes the application tier disposable. Any instance can be terminated at any time by a scaling event, an instance failure, or a deployment, and no data is lost, because no instance owns any data.
 
 **Recovery readiness.** Automated backups are enabled on the RDS instance with a retention period
 of `[7]` days and a backup window of `[window]`, which supports point-in-time recovery to any
@@ -354,12 +342,12 @@ only from the tier in front of it (Figure SEC-1):
 
 The important detail is that the sources are **security group references, not CIDR ranges**. A rule
 naming `[app-sg]` as its source applies automatically to every instance the Auto Scaling group
-launches, and to no other resource — so the rule stays correct as the fleet changes size, and it
+launches, and to no other resource. The rule therefore stays correct as the fleet changes size, and it
 cannot be widened accidentally by an IP address being reused.
 
 **Private database placement.** The RDS instance is deployed in a DB subnet group made up of
 private subnets with no route to the internet gateway, and it is `[not publicly accessible]`.
-Reachability was verified by `[state how — for example, attempting a connection to the RDS endpoint
+Reachability was verified by `[state how; for example, attempting a connection to the RDS endpoint
 from outside the VPC and observing that it fails, while the same connection from an application
 instance succeeds]`. The network placement and the security group are independent controls, and the
 database is protected by both.
@@ -371,7 +359,7 @@ template's user data, or in the AMI.
 
 **Restricted administrative access.** Administrative work was performed from `[the AWS Cloud9
 environment / an SSH connection from CIDR X]` rather than by exposing SSH to the internet.
-`[Describe your actual arrangement — for example, port 22 is not open to 0.0.0.0/0 on any security
+`[Describe your actual arrangement; for example, port 22 is not open to 0.0.0.0/0 on any security
 group, and administrative sessions originate from the Cloud9 environment inside the VPC.]`
 
 **Known gaps within scope.** Traffic between the browser and the load balancer is unencrypted HTTP,
@@ -397,7 +385,7 @@ demand can cost.
 **Method (evidence HP-1).** Load was generated with `[the loadtest tool, run from the AWS Cloud9
 environment using Script-2 from the Cloud9 scripts file]`, targeting the load balancer DNS name so
 that requests entered the system by the same path a real user would take. `[State the command and
-its parameters — concurrency, request rate, and duration.]` Metrics were collected from
+its parameters: concurrency, request rate, and duration.]` Metrics were collected from
 `[the load test tool's own output and the CloudWatch metrics for the ALB and the Auto Scaling
 group]`. Each test ran for `[X]` minutes, with `[a settling period between runs to allow the group
 to return to its baseline capacity]`.
@@ -414,11 +402,9 @@ to return to its baseline capacity]`.
 show it: response times stay flat at normal load; as the request rate rises past what two instances
 can serve, response times increase and CPU utilisation crosses the scaling target; the Auto Scaling
 group adds instances; once those instances pass their health checks and start receiving traffic,
-response times fall back toward the baseline. The delay between the load increasing and capacity
-arriving is the interesting part — quantify it, because it is a real property of the system and
-knowing it is what distinguishes analysis from a screenshot.]`
+response times fall back toward the baseline. The delay between the load increasing and capacity arriving is the interesting part, so quantify it. It is a real property of the system, and knowing it is what distinguishes analysis from a screenshot.]`
 
-`[If you recorded errors or timeouts, report them and explain when they occurred — typically in the
+`[If you recorded errors or timeouts, report them and explain when they occurred, typically in the
 window between demand rising and new capacity becoming healthy. Reporting a clean run you did not
 have is both a plagiarism-adjacent problem and easy to expose in questioning.]`
 
@@ -426,7 +412,7 @@ have is both a plagiarism-adjacent problem and easy to expose in questioning.]`
 
 ## 7. Demonstration and student contribution section
 
-*(Complete this from your group's actual division of work — label it **DEMO-1**.)*
+*(Complete this from your group's actual division of work, and label it **DEMO-1**.)*
 
 | No. | Student name | Student ID | Main contributions | Demo role | Evidence ref. |
 |---|---|---|---|---|---|
@@ -466,9 +452,7 @@ Three enhancements would be required before a system of this kind could hold rea
 The most significant is **Multi-AZ deployment of the database**, which would remove the last single
 point of failure in the architecture at the cost of a standby instance. The second is **transport
 encryption and authentication**: a certificate from AWS Certificate Manager with an HTTPS listener
-would protect data in transit, and access control would restrict the application to authenticated
-staff rather than the whole internet — a necessity for personal data regardless of the technical
-architecture. The third is **network-level restriction** of the application to the university's own
+would protect data in transit, and access control would restrict the application to authenticated staff rather than the whole internet, which is a necessity for personal data regardless of the technical architecture. The third is **network-level restriction** of the application to the university's own
 network ranges, so that the service is not exposed publicly at all. Beyond these, `[a read replica
 would relieve the database of read traffic if the record-lookup load grew, and committed-use pricing
 would reduce the running cost once the architecture stabilised]`.
@@ -477,8 +461,7 @@ would reduce the running cost once the architecture stabilised]`.
 
 ## 9. References
 
-> Verify every URL before submitting and check your faculty's required APA edition — the 7th
-> edition does not require retrieval dates for stable content. Add any AWS Academy lab guides or
+> Verify every URL before submitting and check your faculty's required APA edition, since the 7th edition does not require retrieval dates for stable content. Add any AWS Academy lab guides or
 > textbooks you actually drew on, and delete any entry below that you did not use.
 
 Amazon Web Services. (n.d.-a). *AWS Well-Architected Framework*.
@@ -513,7 +496,7 @@ https://docs.aws.amazon.com/pricing-calculator/latest/userguide/what-is-pricing-
 
 ---
 
-## 10. Appendices — evidence checklist
+## 10. Appendices: evidence checklist
 
 Label each artefact with its evidence ID in the caption, as the brief requires.
 
