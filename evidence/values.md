@@ -44,10 +44,10 @@ teammate wants their own copy.
 
 | Group | ID |
 |---|---|
-| ALB-SG | sg- |
-| App-SG | sg- |
-| DB-SG | sg- |
-| Build-SG | sg- |
+| ALB-SG | `sg-0dd8a35db49344985` |
+| App-SG | `sg-078027c0af8c5cc2e` |
+| DB-SG | `sg-0876c9dc85bd6f67f` |
+| Build-SG | `sg-05d99a3d8e3b95da7` (My IP at build time: 27.125.245.206/32) |
 | Cloud9 SG (aws-cloud9-...) | sg- |
 
 ## Stage 06 and 07, data
