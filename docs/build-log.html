@@ -3,7 +3,7 @@
 <b>Group members:</b> [Member 1], [Member 2], [Member 3]<br/>
 <b>Procedure we follow:</b> Student Records Build Runbook, 17 stages (the group runbook document)<br/>
 <b>Log started:</b> 1 September 2026<br/>
-<b>Last updated:</b> 1 September 2026 (v3)</p>
+<b>Last updated:</b> 1 September 2026 (v4)</p>
 
 <h2>1. How to use this log</h2>
 <p>The runbook is the procedure. This log is everything the runbook does not track: the values we agreed on, who has got how far, why we chose what we chose, and what went wrong. Keep both open.</p>
@@ -29,6 +29,8 @@
 <tr><td>RDS</td><td>asm-rds</td><td>MySQL, db.t3.micro, single AZ, gp3 20 GiB, not public, 7-day backups</td><td>us-east-1a</td></tr>
 <tr><td>DB subnet group</td><td>asm-db-subnet-group</td><td>asm-DB-A and asm-DB-B</td><td>&nbsp;</td></tr>
 <tr><td>Cloud9</td><td>asm-Cloud9</td><td>t3.micro, SSH, in a public subnet</td><td>&nbsp;</td></tr>
+<tr><td>Base AMI for all instances</td><td>Ubuntu Server 24.04 LTS</td><td>Pick the LTS explicitly. Ubuntu 26.04 breaks the user data: apt cannot locate nodejs or npm.</td><td>&nbsp;</td></tr>
+<tr><td>Instance metadata option</td><td>V1 and V2 (token optional)</td><td>New launches default to IMDSv2 required, which breaks the metadata call in the lab user-data script. Set at launch, or fix afterwards via Actions, Instance settings, Modify instance metadata options.</td><td>&nbsp;</td></tr>
 <tr><td>AMI</td><td>App-Server-AMI-v1</td><td>from the working App-Server instance</td><td>&nbsp;</td></tr>
 <tr><td>Launch template</td><td>App-LT-v1</td><td>t3.micro, App-SG, LabInstanceProfile, no subnet set</td><td>&nbsp;</td></tr>
 <tr><td>Target group</td><td>App-TG</td><td>HTTP:80, health check path /</td><td>&nbsp;</td></tr>
@@ -43,8 +45,9 @@
 <tr><th>Group</th><th>Inbound</th><th>Notes</th></tr>
 <tr><td>ALB-SG</td><td>TCP 80 from 0.0.0.0/0</td><td>Public web traffic</td></tr>
 <tr><td>App-SG</td><td>TCP 80 from ALB-SG</td><td>Source must be the security group, never a CIDR</td></tr>
-<tr><td>DB-SG</td><td>TCP 3306 from App-SG, TCP 3306 from the Cloud9 SG</td><td>Cloud9 needs it for the migration</td></tr>
+<tr><td>DB-SG</td><td>TCP 3306 from App-SG, from the Cloud9 SG, and from Build-SG</td><td>Cloud9 needs it for the migration; Build-SG is temporary so the stage 10 instance can be tested by public IP. Never a CIDR source, and never 0.0.0.0/0.</td></tr>
 <tr><td>Build-SG</td><td>TCP 80 from My IP, TCP 22 from My IP, TCP 3306 from the Cloud9 SG</td><td>Temporary. Deleted at stage 17 and absent from the final diagram.</td></tr>
+<tr><td>All four groups</td><td>Outbound: All traffic to 0.0.0.0/0</td><td>This is the default, but confirm it. Without outbound on Build-SG, apt fails silently at first boot and the app never gets built.</td></tr>
 </table>
 
 <h3>2.2 Values fixed by the lab scripts (do not change)</h3>
@@ -100,10 +103,19 @@
 <p>The first two are known before anyone starts. Add yours as you hit them.</p>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>ID</th><th>Stage</th><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
-<tr><td>I-01</td><td>10</td><td>App Server loads but shows no student records, or errors on any database operation. The secret fetch itself succeeds.</td><td>The runbook launches this instance with Build-SG only, but DB-SG accepts 3306 from App-SG and the Cloud9 SG, not from Build-SG. The instance can reach Secrets Manager but is refused by RDS.</td><td>Attach both App-SG and Build-SG to the instance. Security groups are instance-level and are not baked into the AMI, so stages 11 and 12 are unaffected, and nothing extra needs removing at stage 17.</td></tr>
+<tr><td>I-01</td><td>10</td><td>RESOLVED in the current runbook. App Server reached but no records, while the secret fetch succeeded.</td><td>The earlier runbook launched the stage 10 instance with Build-SG only, which DB-SG did not accept.</td><td>The runbook now adds 3306 from Build-SG to DB-SG at stage 04, and removes it again at stage 17. No action needed, kept for the record.</td></tr>
 <tr><td>I-02</td><td>09</td><td>mysqldump hangs and then times out.</td><td>Build-SG is missing the 3306-from-Cloud9 rule, which is added at stage 05 rather than stage 04.</td><td>Add the rule, then rerun. If instead it is refused instantly, MySQL is not accepting remote connections, so check the bind-address line in the user data actually ran.</td></tr>
+<tr><td>I-03</td><td>17</td><td>Deleting Build-SG fails with "resource sg-xxxx has a dependent object".</td><td>The stage 17 Harden list deletes Build-SG before removing the DB-SG rule that references it. AWS refuses to delete a group another group's rule points at. The runbook's own Teardown section has the right order, so the two sections disagree.</td><td>Reverse the two steps: remove the Build-SG source from DB-SG first, then delete Build-SG.</td></tr>
+<tr><td>I-04</td><td>14</td><td>Not a failure, a wording trap. The runbook says to terminate App-Server so no EC2 remains in a public subnet.</td><td>The Cloud9 instance is also EC2 in a public subnet, and it has to stay until the stage 16 load test is done.</td><td>Do not write "no EC2 instances in public subnets" in the report while Cloud9 exists. Show Cloud9 on the diagram and describe it as the admin and testing host.</td></tr>
 <tr><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td></tr>
 </table>
+
+<h2>5.1 Worth writing up in the report</h2>
+<p><b>How the application resolves its credentials.</b> The app copies the APP_DB_* environment variables into its config synchronously, then asynchronously fetches Mydbsecret and overwrites them. The secret always wins, so passing database settings on the command line achieves nothing. If the lookup fails it falls back to localhost with nodeapp and student12, which is exactly what the phase-2 user data builds locally.</p>
+<p>The consequence is that <b>whether an instance uses local MySQL or RDS is decided solely by whether it has an IAM role</b>. The phase-2 POC is launched with no instance profile so the lookup fails and it uses its own database. The App Server gets LabInstanceProfile, reads the secret, and connects to RDS. That single difference is the whole decoupling story, and it is the answer to "how does the decoupling actually work" in the demonstration.</p>
+<p>Diagnostic: <code>grep -n "Secrets not found" /home/ubuntu/app.log</code>. Present means local MySQL, absent means it read the secret and is on RDS.</p>
+<p><b>Why the database route table has no default route.</b> Defence in depth beyond the security groups: even a misconfigured group cannot give the database a path to the internet.</p>
+<p><b>Every lab restriction that forced a substitution.</b> S3 instead of CloudWatch for flow logs, no WAF, single-AZ RDS. Naming the constraint and the production alternative reads as understanding rather than excuse-making.</p>
 
 <h2>6. Evidence tracker</h2>
 <table border="1" cellpadding="6" cellspacing="0">
@@ -148,6 +160,7 @@
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Version</th><th>Date</th><th>Change</th></tr>
 <tr><td>v1</td><td>1 Sep 2026</td><td>Log created with a reference procedure from the assignment brief.</td></tr>
+<tr><td>v4</td><td>1 Sep 2026</td><td>Reconciled with the corrected runbook. Security group table updated for the Build-SG source on DB-SG and the outbound requirement, Ubuntu 24.04 LTS and the IMDSv1 metadata option recorded, issue I-01 marked resolved, two new issues logged, and the credential-resolution behaviour written up for the report.</td></tr>
 <tr><td>v3</td><td>1 Sep 2026</td><td>Checked against the official AWS Academy project brief. Added the cost estimate presentation to the lecturer, which no document had scheduled, and recorded which parts of the runbook are required scope and which are optional enhancements.</td></tr>
 <tr><td>v2</td><td>1 Sep 2026</td><td>Reconciled with the 17-stage build runbook. Real names and script-fixed values recorded, stage progress tracker replaces the generic procedure, decision log filled from the runbook's stated choices, issue log pre-populated with the stage 10 security group gap and the stage 09 timeout, and a section added for work neither document covers.</td></tr>
 </table>

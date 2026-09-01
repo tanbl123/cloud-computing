@@ -133,9 +133,16 @@ Do not capture the output of `get-secret-value` unless you redact the password f
 | Editing a record | `F-2c-edit.png` | The changed value after a page reload | §6.1 C1 |
 | Deleting a record | `F-2d-delete.png` | The list without the row | §6.1 C1 |
 
-⚠ **LAST CHANCE (terminated at stage 10).** This instance is Phase 2 of your brief. Add several
-real records here before you go on, because the migration at stage 09 is only interesting if it
-moves something.
+| Log line proving local fallback | `SEC-2a-secrets-not-found.png` | `grep "Secrets not found" /home/ubuntu/app.log` | §6.5 C5, appendix |
+
+Launch this instance with **no IAM instance profile**. That is deliberate: the secret lookup fails,
+the app falls back to local MySQL, and Phase 2 behaves as designed. The `Secrets not found` line in
+the log is worth capturing, because paired with its absence at stage 10 it proves the credential
+mechanism rather than merely asserting it.
+
+⚠ **LAST CHANCE (terminated at stage 10).** This instance is Phase 2 of your brief. Add five or six
+realistic records before you go on, because the migration at stage 09 is only interesting if it
+moves something, and "Test1, Test2, Test3" reads badly in a report.
 
 Reload the page after every write before you capture it. A screenshot of a submitted form proves
 the form submitted, not that the database kept anything.
@@ -165,8 +172,10 @@ database, which is not the claim you are making.
 ⚠ **LAST CHANCE (terminated at stage 14).** `SEC-2-instance-role.png` and
 `SEC-2-no-hardcoded-creds.png` together are your whole credential-handling argument.
 
-Remember issue I-01: attach **both App-SG and Build-SG** to this instance, or it will not reach the
-database and there will be nothing to photograph.
+This instance **must** have `LabInstanceProfile` attached, the opposite of stage 08. Confirm the log
+does **not** say `Secrets not found` before you photograph anything: that absence is what proves it
+read the secret and is talking to RDS. Capture it as `SEC-2b-secret-used.png` and pair it with the
+stage 08 screenshot. Two log lines, side by side, are the clearest possible evidence of decoupling.
 
 ## Stage 11 — AMI
 
@@ -249,6 +258,14 @@ it is much easier to fill in now than to reconstruct from screenshots later.
 
 Before you delete Build-SG, confirm `SEC-1-sg-build.png` from stage 04 exists. Once it is gone you
 cannot prove SSH was restricted.
+
+**Order matters here.** Remove the Build-SG source from `DB-SG` *first*, then delete `Build-SG`.
+Doing it the other way round fails with "resource sg-xxxx has a dependent object", because AWS will
+not delete a group that another group's rule still references. The runbook's Harden list has these
+two steps the wrong way round; its Teardown section has them right.
+
+Recapture `SEC-1-sg-db.png` afterwards. The version showing only App-SG and Cloud9 as sources is a
+stronger C5 exhibit than the one that still lists Build-SG.
 
 Export the estimate as a file as well as screenshotting it. The report asks for the export.
 
