@@ -71,7 +71,7 @@
 <tr><td>02 VPC and six subnets</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. DNS hostnames enabled, AZ pairing verified (A subnets in us-east-1a, B in us-east-1b), auto-assign public IPv4 on the two public subnets only. HA-1-subnets.png and HA-1-vpc-detail.png captured.</td></tr>
 <tr><td>03 IGW, NAT, three route tables</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. All three route tables verified on both tabs: asm-RT-DB has a single local route, asm-RT-Public points at asm-IGW, asm-RT-App points at asm-NAT. No subnet left on the main route table.</td></tr>
 <tr><td>04 Four security groups</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>All four in asm-VPC. App-SG and DB-SG use security group references as sources, never CIDRs. Build-SG limited to a single /32. Two 3306 rules from the Cloud9 group still to add at stage 05.</td></tr>
-<tr><td>05 Cloud9</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Add the two pending 3306 rules here</td></tr>
+<tr><td>05 Cloud9</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>asm-Cloud9 in asm-VPC, SG sg-03363bdb3bb195521. CLI verified. Note: aws configure is rejected by the wrapper in this environment, so region and pager are set with AWS_DEFAULT_REGION and AWS_PAGER exported in ~/.bashrc instead.</td></tr>
 <tr><td>06 RDS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HA-2, SEC-1. Start early, takes 5-10 min.</td></tr>
 <tr><td>07 Secret (Script-1)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-2</td></tr>
 <tr><td>08 Phase-2 POC instance</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence F-1, F-2</td></tr>

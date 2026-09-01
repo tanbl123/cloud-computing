@@ -48,7 +48,8 @@ teammate wants their own copy.
 | App-SG | `sg-078027c0af8c5cc2e` |
 | DB-SG | `sg-0876c9dc85bd6f67f` |
 | Build-SG | `sg-05d99a3d8e3b95da7` (My IP at build time: 27.125.245.206/32) |
-| Cloud9 SG (aws-cloud9-...) | sg- |
+| Cloud9 SG (`aws-cloud9-asm-Cloud9-...InstanceSecurityGroup-y8ZVJVV6DHLG`) | `sg-03363bdb3bb195521` |
+| Default SG of asm-VPC (unused) | `sg-0f6a3c8fefe61cf41` |
 
 ## Stage 06 and 07, data
 
