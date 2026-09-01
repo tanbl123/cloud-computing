@@ -16,8 +16,12 @@ only thing in short supply, so every decision below trades money for time.
 **Leave the stack running.** Do not park between sessions. It saves $26 nobody needs and costs
 rebuild time plus the risk of forgetting the `asm-RT-App` route after recreating the NAT gateway.
 
-**Drop stage 15, the VPC flow logs.** It is the only part of the runbook that the AWS project brief
-does not require. Do it in the video week if there is time and you want the extra C5 material.
+**Follow the runbook as written.** All seventeen stages, no steps skipped. Stage 15 is beyond what
+the AWS project brief strictly requires, but it is quick and it earns C5 material, so it stays.
+
+**Run stage 15 before stage 16, not after.** With flow logs already collecting, the load test
+generates the traffic that fills them, so `SEC-1-flowlog-records.png` shows real ACCEPTs on port 80
+to your app instances instead of a nearly empty log group. Same two stages, better evidence.
 
 **Do not all three build in parallel first.** Nothing in the rubric requires three stacks. C1 to C7
 are shared group marks on one demonstrated system, and the individual D3 marks are for the guided
@@ -56,9 +60,11 @@ screenshots are last chance. In parallel, the writer builds the pricing estimate
 before creating the AMI. By the end of today the ALB DNS name should serve the application, which
 means F-1, LB-1, LB-2 and SC-1 are all captured.
 
-**Fri 4 Sep** — Stage 16, the load test. Budget a full hour and take the baseline reading before
-generating any load. Scale-in needs 10 to 15 minutes of idle afterwards. Whatever slipped earlier
-in the week gets caught up today.
+**Fri 4 Sep** — Stage 15 first, then stage 16. Turn on flow logs with the 1-minute aggregation
+interval and confirm the status column reads plain Active before moving on, since a silent delivery
+failure looks identical to low traffic. Then the load test: budget a full hour, take the baseline
+reading before generating any load, and allow 10 to 15 minutes of idle afterwards for scale-in.
+Whatever slipped earlier in the week gets caught up today.
 
 **Sat 5 Sep** — Report assembly. The draft in `report-draft.md` already carries the structure, so
 this is filling in real values, dropping screenshots against their evidence IDs, and writing the
@@ -70,13 +76,14 @@ C7 discussion around the load test numbers. Also the slides from the showcase te
 
 ## If you fall behind
 
-The order to sacrifice things, worst option last:
+Talk to the group before dropping anything, since all three of you are meant to end up with the
+same build. If it comes to it, the order to give things up, worst option last:
 
-1. Stage 15, the flow logs. Not required at all.
+1. The second builder's stack. One working stack satisfies every group mark.
 2. Scale-in evidence in SC-2. The brief says "where available", so state honestly that you captured
    scale-out but the session ended before scale-in.
-3. The second builder's stack. One working stack is enough for every group mark.
-4. Depth in the report's discussion sections, keeping the evidence complete.
+3. Depth in the report's discussion sections, keeping the evidence complete.
+4. Stage 15, the flow logs, which is the only stage the AWS brief does not require.
 
 Never sacrifice a screenshot to save time. Rebuilding infrastructure to recapture one costs far
 more than taking it did.

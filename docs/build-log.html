@@ -153,7 +153,7 @@
 <h2>7.1 Required scope versus enhancements</h2>
 <p>The AWS project brief lists what the solution must do. Two things in our runbook go beyond it, and it is worth knowing which is which before the budget gets tight.</p>
 <p><b>Required:</b> the VPC and subnets, the EC2 web tier, RDS MySQL in private subnets, Secrets Manager for the credentials, Cloud9, the Application Load Balancer across two AZs, EC2 Auto Scaling with a target tracking policy, the load test, the architecture diagram and the cost estimate. That is stages 01 to 14, 16 and 17.</p>
-<p><b>Beyond the required scope:</b> VPC flow logs at stage 15, and the WAF and Shield entries on the diagram. The brief invites extra work, saying you are encouraged to implement additional functionality, so these earn credit as security evidence rather than being wasted effort. But if a session runs short or the budget is under pressure, stage 15 is the one to drop, not anything else.</p>
+<p><b>Beyond the required scope:</b> VPC flow logs at stage 15, and the WAF and Shield entries on the diagram. The brief invites extra work, saying you are encouraged to implement additional functionality, so these earn credit as security evidence rather than being wasted effort. We are building it. Sequence it before the load test so the test traffic fills the logs and the records are worth screenshotting. If anything ever has to be cut, this is the only stage that could go without losing a requirement.</p>
 <p><b>Allowed but not chosen:</b> the brief permits a serverless database instead of a provisioned instance. We chose provisioned db.t3.micro. If anyone asks in the demo, that is the answer, and the reason is predictable cost in a fixed lab budget.</p>
 
 <h2>8. Log change history</h2>
