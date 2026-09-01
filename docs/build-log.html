@@ -3,7 +3,7 @@
 <b>Group members:</b> [Member 1], [Member 2], [Member 3]<br/>
 <b>Procedure we follow:</b> Student Records Build Runbook, 17 stages (the group runbook document)<br/>
 <b>Log started:</b> 1 September 2026<br/>
-<b>Last updated:</b> 1 September 2026 (v2)</p>
+<b>Last updated:</b> 1 September 2026 (v3)</p>
 
 <h2>1. How to use this log</h2>
 <p>The runbook is the procedure. This log is everything the runbook does not track: the values we agreed on, who has got how far, why we chose what we chose, and what went wrong. Keep both open.</p>
@@ -131,15 +131,23 @@
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Item</th><th>Why it matters</th><th>Owner</th><th>Due</th></tr>
 <tr><td>Architecture diagram drawn before building</td><td>The brief treats Phase 1 as planning, and HA-1 depends on it. The runbook starts at the console.</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>Present the cost estimate to the lecturer</td><td>Phase 1 of the AWS project brief says the estimate is presented to your educator, not just filed in the report. Nobody has scheduled this.</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>First-pass cost estimate before building</td><td>The brief says cost is a design constraint and the architecture should change if the estimate does not fit. Doing it only at stage 17 makes it a report artifact rather than a design input.</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>Presentation slides from Academy_Lab_Projects_Showcase_template.pptx</td><td>Listed in the report contents and converted to PDF for submission.</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>Individual evidence for D2 and D3</td><td>Marked per student, not shared. Tutorial and practical submissions, plus guided and challenge lab completion.</td><td>all three</td><td>[  ]</td></tr>
 <tr><td>Group contract and member profile page</td><td>Required in the report structure.</td><td>[  ]</td><td>[  ]</td></tr>
 </table>
 
+<h2>7.1 Required scope versus enhancements</h2>
+<p>The AWS project brief lists what the solution must do. Two things in our runbook go beyond it, and it is worth knowing which is which before the budget gets tight.</p>
+<p><b>Required:</b> the VPC and subnets, the EC2 web tier, RDS MySQL in private subnets, Secrets Manager for the credentials, Cloud9, the Application Load Balancer across two AZs, EC2 Auto Scaling with a target tracking policy, the load test, the architecture diagram and the cost estimate. That is stages 01 to 14, 16 and 17.</p>
+<p><b>Beyond the required scope:</b> VPC flow logs at stage 15, and the WAF and Shield entries on the diagram. The brief invites extra work, saying you are encouraged to implement additional functionality, so these earn credit as security evidence rather than being wasted effort. But if a session runs short or the budget is under pressure, stage 15 is the one to drop, not anything else.</p>
+<p><b>Allowed but not chosen:</b> the brief permits a serverless database instead of a provisioned instance. We chose provisioned db.t3.micro. If anyone asks in the demo, that is the answer, and the reason is predictable cost in a fixed lab budget.</p>
+
 <h2>8. Log change history</h2>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Version</th><th>Date</th><th>Change</th></tr>
 <tr><td>v1</td><td>1 Sep 2026</td><td>Log created with a reference procedure from the assignment brief.</td></tr>
+<tr><td>v3</td><td>1 Sep 2026</td><td>Checked against the official AWS Academy project brief. Added the cost estimate presentation to the lecturer, which no document had scheduled, and recorded which parts of the runbook are required scope and which are optional enhancements.</td></tr>
 <tr><td>v2</td><td>1 Sep 2026</td><td>Reconciled with the 17-stage build runbook. Real names and script-fixed values recorded, stage progress tracker replaces the generic procedure, decision log filled from the runbook's stated choices, issue log pre-populated with the stage 10 security group gap and the stage 09 timeout, and a section added for work neither document covers.</td></tr>
 </table>
