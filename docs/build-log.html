@@ -71,7 +71,7 @@
 <tr><td>02 VPC and six subnets</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. DNS hostnames enabled, AZ pairing verified (A subnets in us-east-1a, B in us-east-1b), auto-assign public IPv4 on the two public subnets only. HA-1-subnets.png and HA-1-vpc-detail.png captured.</td></tr>
 <tr><td>03 IGW, NAT, three route tables</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. All three route tables verified on both tabs: asm-RT-DB has a single local route, asm-RT-Public points at asm-IGW, asm-RT-App points at asm-NAT. No subnet left on the main route table.</td></tr>
 <tr><td>04 Four security groups</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>All four in asm-VPC. App-SG and DB-SG use security group references as sources, never CIDRs. Build-SG limited to a single /32. Two 3306 rules from the Cloud9 group still to add at stage 05.</td></tr>
-<tr><td>05 Cloud9</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>asm-Cloud9 in asm-VPC, SG sg-03363bdb3bb195521. CLI verified. Note: aws configure is rejected by the wrapper in this environment, so region and pager are set with AWS_DEFAULT_REGION and AWS_PAGER exported in ~/.bashrc instead.</td></tr>
+<tr><td>05 Cloud9</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>asm-Cloud9 in asm-VPC, SG sg-03363bdb3bb195521, in asm-Public-A over SSH. CLI verified. Both deferred 3306 rules added, so Build-SG and DB-SG now carry three rules each. Note: aws configure is rejected by the wrapper in this environment, so region and pager are set with AWS_DEFAULT_REGION and AWS_PAGER exported in ~/.bashrc instead.</td></tr>
 <tr><td>06 RDS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HA-2, SEC-1. Start early, takes 5-10 min.</td></tr>
 <tr><td>07 Secret (Script-1)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-2</td></tr>
 <tr><td>08 Phase-2 POC instance</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence F-1, F-2</td></tr>
@@ -160,6 +160,7 @@
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Version</th><th>Date</th><th>Change</th></tr>
 <tr><td>v1</td><td>1 Sep 2026</td><td>Log created with a reference procedure from the assignment brief.</td></tr>
+<tr><td>v7</td><td>1 Sep 2026</td><td>Stages 04 and 05 complete. Five of seventeen stages done on the first build.</td></tr>
 <tr><td>v6</td><td>1 Sep 2026</td><td>Stage 03 complete and verified. Gateway and route table IDs recorded.</td></tr>
 <tr><td>v5</td><td>1 Sep 2026</td><td>Stages 01 and 02 complete on the first build. Subnet IDs recorded in evidence/values.md.</td></tr>
 <tr><td>v4</td><td>1 Sep 2026</td><td>Reconciled with the corrected runbook. Security group table updated for the Build-SG source on DB-SG and the outbound requirement, Ubuntu 24.04 LTS and the IMDSv1 metadata option recorded, issue I-01 marked resolved, two new issues logged, and the credential-resolution behaviour written up for the report.</td></tr>
