@@ -19,12 +19,12 @@ teammate wants their own copy.
 |---|---|
 | VPC ID | `vpc-0e5d12a859efbf782` |
 | Main route table (auto-created) | `rtb-0da6a850010e005a2` |
-| asm-Public-A subnet ID | subnet- |
-| asm-Public-B subnet ID | subnet- |
-| asm-App-A subnet ID | subnet- |
-| asm-App-B subnet ID | subnet- |
-| asm-DB-A subnet ID | subnet- |
-| asm-DB-B subnet ID | subnet- |
+| asm-Public-A subnet ID | `subnet-0cb19ed319b5dfa45` (10.0.0.0/24) |
+| asm-Public-B subnet ID | `subnet-089126fbf226b1bc3` (10.0.1.0/24) |
+| asm-App-A subnet ID | `subnet-064676218e926c74c` (10.0.2.0/24) |
+| asm-App-B subnet ID | `subnet-0fb96b33f55918639` (10.0.3.0/24) |
+| asm-DB-A subnet ID | `subnet-0bd19aa5bb9b8e6be` (10.0.4.0/24) |
+| asm-DB-B subnet ID | `subnet-07332949cb37af58c` (10.0.5.0/24) |
 
 ## Stage 03, gateways
 
