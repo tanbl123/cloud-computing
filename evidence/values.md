@@ -19,6 +19,8 @@ teammate wants their own copy.
 |---|---|
 | VPC ID | `vpc-0e5d12a859efbf782` |
 | Main route table (auto-created) | `rtb-0da6a850010e005a2` |
+| DNS hostnames | Enabled |
+| AZ mapping for this account | us-east-1a = use1-az2, us-east-1b = use1-az4 (differs per account, teammates will see other numbers) |
 | asm-Public-A subnet ID | `subnet-0cb19ed319b5dfa45` (10.0.0.0/24) |
 | asm-Public-B subnet ID | `subnet-089126fbf226b1bc3` (10.0.1.0/24) |
 | asm-App-A subnet ID | `subnet-064676218e926c74c` (10.0.2.0/24) |

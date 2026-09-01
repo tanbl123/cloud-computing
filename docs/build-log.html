@@ -67,8 +67,8 @@
 <p>Stages are the runbook's. Put your initials and the date when you complete one.</p>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Stage</th><th>[Member 1]</th><th>[Member 2]</th><th>[Member 3]</th><th>Notes</th></tr>
-<tr><td>01 Lab start, pin region</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-<tr><td>02 VPC and six subnets</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HA-1</td></tr>
+<tr><td>01 Lab start, pin region</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>02 VPC and six subnets</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. DNS hostnames enabled, AZ pairing verified (A subnets in us-east-1a, B in us-east-1b), auto-assign public IPv4 on the two public subnets only. HA-1-subnets.png and HA-1-vpc-detail.png captured.</td></tr>
 <tr><td>03 IGW, NAT, three route tables</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-1, HA-1</td></tr>
 <tr><td>04 Four security groups</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-1</td></tr>
 <tr><td>05 Cloud9</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Add the two pending 3306 rules here</td></tr>
@@ -160,6 +160,7 @@
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Version</th><th>Date</th><th>Change</th></tr>
 <tr><td>v1</td><td>1 Sep 2026</td><td>Log created with a reference procedure from the assignment brief.</td></tr>
+<tr><td>v5</td><td>1 Sep 2026</td><td>Stages 01 and 02 complete on the first build. Subnet IDs recorded in evidence/values.md.</td></tr>
 <tr><td>v4</td><td>1 Sep 2026</td><td>Reconciled with the corrected runbook. Security group table updated for the Build-SG source on DB-SG and the outbound requirement, Ubuntu 24.04 LTS and the IMDSv1 metadata option recorded, issue I-01 marked resolved, two new issues logged, and the credential-resolution behaviour written up for the report.</td></tr>
 <tr><td>v3</td><td>1 Sep 2026</td><td>Checked against the official AWS Academy project brief. Added the cost estimate presentation to the lecturer, which no document had scheduled, and recorded which parts of the runbook are required scope and which are optional enhancements.</td></tr>
 <tr><td>v2</td><td>1 Sep 2026</td><td>Reconciled with the 17-stage build runbook. Real names and script-fixed values recorded, stage progress tracker replaces the generic procedure, decision log filled from the runbook's stated choices, issue log pre-populated with the stage 10 security group gap and the stage 09 timeout, and a section added for work neither document covers.</td></tr>
