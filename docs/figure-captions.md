@@ -46,12 +46,22 @@ the rule names a group rather than an address, it remains correct as the Auto Sc
 size.
 
 **Figure 8.** *(Evidence SEC-1)* Inbound rules for `DB-SG`. Access to MySQL on port 3306 is
-restricted to named security groups, and no CIDR range appears as a source, so the database cannot be
-reached from the public internet.
+restricted to three named security groups: the application tier, the temporary build group, and the
+Cloud9 administration host. No CIDR range appears as a source, so the database cannot be reached from
+the public internet.
 
 **Figure 9.** *(Evidence SEC-1)* Inbound rules for `Build-SG`, the temporary group used to reach
-instances directly during construction. Administrative access over SSH was restricted to a single IP
-address rather than exposed to `0.0.0.0/0`. This group was deleted once the build was complete.
+instances directly during construction. Browser and SSH access were restricted to a single
+administrative IP address rather than exposed to `0.0.0.0/0`, and MySQL access was granted only to the
+Cloud9 host so that the database could be exported during migration. This group was deleted once the
+build was complete.
+
+## Stage 05 — Cloud9
+
+**Figure 10.** *(Evidence HP-1)* The AWS Cloud9 environment `asm-Cloud9`, a `t3.micro` instance placed
+inside `asm-VPC`. Cloud9 provided the only command line available in the lab environment, and was used
+to create the Secrets Manager secret, perform the database migration, and generate load during
+performance testing.
 
 ---
 
