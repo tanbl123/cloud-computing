@@ -1,49 +1,48 @@
 # Lab budget plan
 
-Each lab account has US$100. This stack is expensive enough that leaving it running will end the
-account before submission, and cheap enough to be safe if it is parked between sessions. The
-difference between the two is roughly a factor of three, so the discipline matters more than any
-sizing choice.
+**Conclusion first: the budget is not a constraint on this project. Do not spend time managing it.**
 
-Prices are approximate us-east-1 list prices. Verify them in the AWS Pricing Calculator, which you
-have to build anyway for evidence CO-1.
+Report is due **Sunday 6 September 2026**, and one week is reserved after that for the video
+recording, so the stack must stay alive until about **Sunday 13 September**. That is twelve days
+from 1 September. Each student has their own separate $100, so there is no shared pool to ration.
 
-## What it costs
-
-| State | Per day | Per week | What is running |
-|---|---|---|---|
-| Fully running | $3.10 | $21.70 | NAT gateway, ALB, RDS, 2 instances, 3 public IPv4 |
-| Parked, ALB kept | $0.95 | $6.63 | ALB and its IPs, RDS storage, snapshots |
-| Parked, ALB deleted | $0.13 | $0.89 | Storage only |
-
-Breakdown of the fully running figure, per day: NAT gateway $1.08, load balancer $0.54, RDS
-instance $0.41, two t3.micro $0.50, three public IPv4 addresses $0.36, storage and CloudWatch the
-remainder. Public IPv4 has been charged since February 2024 even when the address is in use, which
-is easy to overlook.
-
-## How long $100 lasts
-
-| Days to submission | Left running | Parked between sessions |
+| Approach | 12-day cost | Spare from $100 |
 |---|---|---|
-| 30 | $93 | $28 |
-| 45 | **$139 over budget** | $43 |
-| 60 | **$186 over budget** | $57 |
-| 75 | **$232 over budget** | $71 |
+| Leave everything running | **$37** | $63 |
+| Park between sessions | $11 | $89 |
 
-Left running, the credit is gone in **32 days**. Parked, it lasts about **105 days**.
+Parking saves $26 you do not need. It costs three minutes of teardown and rebuild per session, and
+every rebuild is a chance to forget re-pointing the `asm-RT-App` route at the new NAT gateway,
+which produces instances that boot fine and then fail to reach Secrets Manager. **Leave it
+running.** Spend the saved attention on the deadline instead.
 
-A realistic plan of 60 days parked plus 40 hours of active building comes to about $60, leaving
-roughly $40 of headroom for the demonstration and for mistakes.
+Delete everything after the video is recorded, not before.
 
-## Parking procedure, run at the end of every session
+## If the timeline slips
 
-1. Auto Scaling group: set desired and minimum to 0. Instances stop costing immediately.
-2. Delete the NAT gateway and release its Elastic IP. This is the single biggest line item.
-3. Stop the RDS instance. Note that RDS restarts itself automatically after 7 days.
-4. Leave the ALB alone. See below.
+The figures below are what matters only if this project runs long, for example if the demo is
+deferred or a resubmission is required.
 
-To resume: recreate the NAT gateway, re-point the `asm-RT-App` default route at it, start RDS, and
-set the Auto Scaling group back to 2. About three minutes.
+| State | Per day | Per week |
+|---|---|---|
+| Fully running | $3.10 | $21.70 |
+| Parked, ALB kept | $0.95 | $6.63 |
+| Parked, ALB deleted | $0.13 | $0.89 |
+
+Left running continuously the credit lasts **32 days**. Parked it lasts about 105 days. Breakdown
+of the running figure, per day: NAT gateway $1.08, load balancer $0.54, RDS instance $0.41, two
+t3.micro $0.50, three public IPv4 $0.36, storage and CloudWatch the rest. Public IPv4 has been
+charged since February 2024 even when in use, which is easy to overlook.
+
+### Parking procedure, only if you need it
+
+1. Auto Scaling group: desired and minimum to 0.
+2. Delete the NAT gateway and release its Elastic IP.
+3. Stop the RDS instance. It restarts itself after 7 days.
+4. Leave the ALB alone.
+
+To resume: recreate the NAT gateway, **re-point the `asm-RT-App` default route at the new one**,
+start RDS, set the Auto Scaling group back to 2.
 
 ## Do not delete the load balancer
 
@@ -53,11 +52,9 @@ would point at a system that no longer exists. Pay to keep it.
 
 ## One stack needs to survive, not three
 
-Criteria C1 to C7 are shared group marks and the group demonstrates one system. So only one of the
-three accounts has to keep a parked stack alive until demo day. The other two should build the
-whole thing, capture their evidence, finish their individual lab work, and then delete everything,
-which puts them at roughly $10 total. Whoever has the most remaining budget should be the one who
-carries the surviving stack.
+Criteria C1 to C7 are shared group marks and the group demonstrates one system, so only one account
+has to carry a stack through to the video recording. With the budget this comfortable that is a
+time argument rather than a cost one: see `schedule.md`.
 
 ## Watch out for
 
