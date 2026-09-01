@@ -17,7 +17,8 @@ teammate wants their own copy.
 
 | Item | Value |
 |---|---|
-| VPC ID | vpc- |
+| VPC ID | `vpc-0e5d12a859efbf782` |
+| Main route table (auto-created) | `rtb-0da6a850010e005a2` |
 | asm-Public-A subnet ID | subnet- |
 | asm-Public-B subnet ID | subnet- |
 | asm-App-A subnet ID | subnet- |
