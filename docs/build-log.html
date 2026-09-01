@@ -1,143 +1,145 @@
 <h1>BMIT3273 Cloud Computing &ndash; Group Build Log</h1>
 <p><b>Project:</b> Building a Highly Available, Scalable Web Application (AWS Academy Lab Project: Cloud Web Application Builder)<br/>
 <b>Group members:</b> [Member 1], [Member 2], [Member 3]<br/>
+<b>Procedure we follow:</b> Student Records Build Runbook, 17 stages (the group runbook document)<br/>
 <b>Log started:</b> 1 September 2026<br/>
-<b>Last updated:</b> 1 September 2026 (v1, initial)</p>
+<b>Last updated:</b> 1 September 2026 (v2)</p>
 
 <h2>1. How to use this log</h2>
-<p>All three of us have to build the same architecture in our own lab accounts. That only works if we agree on the values before anyone starts clicking, because if one person uses 10.0.0.0/16 and another uses 172.31.0.0/16, our screenshots stop matching each other and the report becomes impossible to write consistently.</p>
-<p>So this log has one job: to be the single source of truth for what we build. Section 2 holds the agreed values. Nobody changes a value in Section 2 on their own. If you think a value is wrong, put it in the Decision Log (Section 5) and tell the group, then change it once we agree.</p>
-<p>Section 3 is the build procedure. Work through it in order. When you finish a step, put your initials and the date in the progress tracker (Section 4) and capture the evidence that step lists, because the report is marked on evidence and screenshots are much harder to recreate later than to take at the time.</p>
-<p>Section 6 is for problems. Log them even after you fix them. If one of us hits an error, the other two will probably hit the same one, and a solved problem written down saves the next person an hour.</p>
+<p>The runbook is the procedure. This log is everything the runbook does not track: the values we agreed on, who has got how far, why we chose what we chose, and what went wrong. Keep both open.</p>
+<p>All three of us build the same architecture in our own lab accounts, so the values in Section 2 must be identical across all three. They are not suggestions. Several of them are hardcoded in the lab scripts and will break the build if changed.</p>
+<p>When you finish a stage, put the date in Section 4. When something breaks, write it in Section 6 even after you fix it, because the other two will probably hit the same thing.</p>
 
-<h2>2. Agreed configuration (single source of truth)</h2>
-<p>Everyone uses these exact values. Where a value is still marked TBC, it has not been agreed yet and must not be invented individually.</p>
+<h2>2. Agreed configuration</h2>
+<p>Region is <b>us-east-1</b> for every resource. Re-check the region selector every time you re-enter the lab, because it resets.</p>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>Item</th><th>Agreed value</th><th>Notes</th></tr>
-<tr><td>Region</td><td>us-east-1</td><td>Required for the Pricing Calculator estimate</td></tr>
-<tr><td>Availability Zones</td><td>us-east-1a, us-east-1b</td><td>Two AZs is the minimum the brief requires</td></tr>
-<tr><td>VPC name / CIDR</td><td>[TBC] / 10.0.0.0/16</td><td></td></tr>
-<tr><td>Public subnet A</td><td>10.0.0.0/24 (us-east-1a)</td><td>ALB</td></tr>
-<tr><td>Public subnet B</td><td>10.0.1.0/24 (us-east-1b)</td><td>ALB</td></tr>
-<tr><td>App subnet A</td><td>10.0.2.0/24 (us-east-1a)</td><td></td></tr>
-<tr><td>App subnet B</td><td>10.0.3.0/24 (us-east-1b)</td><td></td></tr>
-<tr><td>DB subnet A</td><td>10.0.4.0/24 (us-east-1a)</td><td>RDS subnet group</td></tr>
-<tr><td>DB subnet B</td><td>10.0.5.0/24 (us-east-1b)</td><td>RDS subnet group</td></tr>
-<tr><td>App instances public or private?</td><td>[TBC]</td><td>See Decision Log D-01. Depends on whether a NAT gateway fits the budget.</td></tr>
-<tr><td>EC2 instance type</td><td>t3.micro</td><td></td></tr>
-<tr><td>AMI</td><td>Latest Ubuntu [record the exact AMI ID]</td><td>Record the ID so all three of us launch the same image</td></tr>
-<tr><td>Security group: ALB</td><td>[TBC name], inbound TCP 80 from 0.0.0.0/0</td><td></td></tr>
-<tr><td>Security group: app</td><td>[TBC name], inbound TCP 80 from the ALB security group</td><td>Source must be the security group, not a CIDR</td></tr>
-<tr><td>Security group: database</td><td>[TBC name], inbound TCP 3306 from the app security group</td><td></td></tr>
-<tr><td>RDS engine / class</td><td>MySQL / db.t3.micro</td><td>Single AZ, enhanced monitoring off</td></tr>
-<tr><td>RDS database name</td><td>[TBC]</td><td></td></tr>
-<tr><td>Backup retention</td><td>[TBC, suggest 7 days]</td><td>Needed as evidence HA-2</td></tr>
-<tr><td>Secrets Manager secret name</td><td>[TBC]</td><td>Created with Script-1</td></tr>
-<tr><td>Instance profile / role</td><td>LabInstanceProfile / LabRole</td><td>Lets the instance read the secret</td></tr>
-<tr><td>Target group name</td><td>[TBC]</td><td>Health check path [TBC, usually /]</td></tr>
-<tr><td>Load balancer name</td><td>[TBC]</td><td>Internet-facing, HTTP:80</td></tr>
-<tr><td>ASG min / desired / max</td><td>2 / 2 / 4</td><td>Min of 2 is for surviving an instance or AZ failure</td></tr>
-<tr><td>Scaling policy</td><td>Target tracking, average CPU [TBC, suggest 50%]</td><td></td></tr>
-<tr><td>Cloud9 instance</td><td>t3.micro, connect by SSH</td><td>Used for the CLI work and load testing</td></tr>
+<tr><th>Resource</th><th>Name</th><th>CIDR / setting</th><th>AZ</th></tr>
+<tr><td>VPC</td><td>asm-VPC</td><td>10.0.0.0/16, DNS hostnames enabled</td><td>&nbsp;</td></tr>
+<tr><td>Public subnet A</td><td>asm-Public-A</td><td>10.0.0.0/24, auto-assign public IP on</td><td>us-east-1a</td></tr>
+<tr><td>Public subnet B</td><td>asm-Public-B</td><td>10.0.1.0/24, auto-assign public IP on</td><td>us-east-1b</td></tr>
+<tr><td>App subnet A</td><td>asm-App-A</td><td>10.0.2.0/24</td><td>us-east-1a</td></tr>
+<tr><td>App subnet B</td><td>asm-App-B</td><td>10.0.3.0/24</td><td>us-east-1b</td></tr>
+<tr><td>DB subnet A</td><td>asm-DB-A</td><td>10.0.4.0/24</td><td>us-east-1a</td></tr>
+<tr><td>DB subnet B</td><td>asm-DB-B</td><td>10.0.5.0/24</td><td>us-east-1b</td></tr>
+<tr><td>Internet gateway</td><td>asm-IGW</td><td>attached to asm-VPC</td><td>&nbsp;</td></tr>
+<tr><td>NAT gateway</td><td>asm-NAT</td><td>in asm-Public-A, public, with Elastic IP</td><td>us-east-1a</td></tr>
+<tr><td>Route table: public</td><td>asm-RT-Public</td><td>0.0.0.0/0 to asm-IGW</td><td>&nbsp;</td></tr>
+<tr><td>Route table: app</td><td>asm-RT-App</td><td>0.0.0.0/0 to asm-NAT</td><td>&nbsp;</td></tr>
+<tr><td>Route table: db</td><td>asm-RT-DB</td><td>local only, no default route</td><td>&nbsp;</td></tr>
+<tr><td>RDS</td><td>asm-rds</td><td>MySQL, db.t3.micro, single AZ, gp3 20 GiB, not public, 7-day backups</td><td>us-east-1a</td></tr>
+<tr><td>DB subnet group</td><td>asm-db-subnet-group</td><td>asm-DB-A and asm-DB-B</td><td>&nbsp;</td></tr>
+<tr><td>Cloud9</td><td>asm-Cloud9</td><td>t3.micro, SSH, in a public subnet</td><td>&nbsp;</td></tr>
+<tr><td>AMI</td><td>App-Server-AMI-v1</td><td>from the working App-Server instance</td><td>&nbsp;</td></tr>
+<tr><td>Launch template</td><td>App-LT-v1</td><td>t3.micro, App-SG, LabInstanceProfile, no subnet set</td><td>&nbsp;</td></tr>
+<tr><td>Target group</td><td>App-TG</td><td>HTTP:80, health check path /</td><td>&nbsp;</td></tr>
+<tr><td>Load balancer</td><td>asm-ALB</td><td>internet-facing, HTTP:80, ALB-SG, both public subnets</td><td>&nbsp;</td></tr>
+<tr><td>Auto Scaling group</td><td>App-ASG</td><td>min 2 / desired 2 / max 4, both app subnets, ELB health checks, grace 300s</td><td>&nbsp;</td></tr>
+<tr><td>Scaling policy</td><td>&nbsp;</td><td>target tracking, average CPU 50%, warmup 300s</td><td>&nbsp;</td></tr>
+<tr><td>Flow logs</td><td>/vpc/asm-flowlogs</td><td>all traffic, CloudWatch Logs, 1-week retention</td><td>&nbsp;</td></tr>
 </table>
 
-<h2>3. Build procedure</h2>
-<p><b>Status of this procedure:</b> this is a reference sequence assembled from the assignment brief, not yet reconciled with the steps in the teammate document. Reconcile the two before anyone relies on it, and record any differences in the Decision Log.</p>
-
-<h3>Phase 1: Design and cost</h3>
+<h3>2.1 Security groups</h3>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Step</th><th>Verify it worked</th><th>Evidence</th></tr>
-<tr><td>1.1</td><td>Draw the architecture diagram using the AWS architecture icons</td><td>Diagram shows both AZs, public and private subnets, ALB, ASG, RDS, Secrets Manager</td><td>HA-1</td></tr>
-<tr><td>1.2</td><td>Build the 12-month Pricing Calculator estimate for us-east-1</td><td>Every service in the diagram appears as a line in the estimate</td><td>CO-1</td></tr>
+<tr><th>Group</th><th>Inbound</th><th>Notes</th></tr>
+<tr><td>ALB-SG</td><td>TCP 80 from 0.0.0.0/0</td><td>Public web traffic</td></tr>
+<tr><td>App-SG</td><td>TCP 80 from ALB-SG</td><td>Source must be the security group, never a CIDR</td></tr>
+<tr><td>DB-SG</td><td>TCP 3306 from App-SG, TCP 3306 from the Cloud9 SG</td><td>Cloud9 needs it for the migration</td></tr>
+<tr><td>Build-SG</td><td>TCP 80 from My IP, TCP 22 from My IP, TCP 3306 from the Cloud9 SG</td><td>Temporary. Deleted at stage 17 and absent from the final diagram.</td></tr>
 </table>
 
-<h3>Phase 2: Basic working application on one instance</h3>
+<h3>2.2 Values fixed by the lab scripts (do not change)</h3>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Step</th><th>Verify it worked</th><th>Evidence</th></tr>
-<tr><td>2.1</td><td>Create the VPC, subnets, internet gateway and route tables per Section 2</td><td>Public subnet route table has a 0.0.0.0/0 route to the internet gateway</td><td>&nbsp;</td></tr>
-<tr><td>2.2</td><td>Launch one EC2 instance (Ubuntu, t3.micro) with the SolutionCodePOC package</td><td>Instance reaches the running state and passes both status checks</td><td>&nbsp;</td></tr>
-<tr><td>2.3</td><td>Open the application on the instance public IPv4 address</td><td>The student records page loads in the browser</td><td>&nbsp;</td></tr>
-<tr><td>2.4</td><td>Test view, add, modify and delete against this single instance</td><td>Reload after each write and confirm the change persisted</td><td>&nbsp;</td></tr>
+<tr><th>What</th><th>Value</th><th>Why it is fixed</th></tr>
+<tr><td>Database username</td><td>nodeapp</td><td>Created by the phase-2 user data, and Script-3 connects to RDS as nodeapp, so the RDS master username must match</td></tr>
+<tr><td>Local DB password</td><td>student12</td><td>Phase-2 local MySQL only. The RDS master password is separate and goes in the secret.</td></tr>
+<tr><td>Database name</td><td>STUDENTS</td><td>Created locally by user data and used as the RDS initial database name</td></tr>
+<tr><td>Table</td><td>students</td><td>id, name, address, city, state, email, phone</td></tr>
+<tr><td>Application port</td><td>80</td><td>APP_PORT=80, so the target group and health check use port 80</td></tr>
+<tr><td>Secret name</td><td>Mydbsecret</td><td>The App Server code looks up this exact name</td></tr>
+<tr><td>App directory</td><td>/home/ubuntu/resources/codebase_partner</td><td>Where the Node app unzips, useful over SSH</td></tr>
+<tr><td>RDS master password</td><td>[agree one and record where it is kept, not here]</td><td>Chosen by us, stored in Mydbsecret</td></tr>
 </table>
 
-<h3>Phase 3: Split the tiers and secure the credentials</h3>
+<h2>3. Stage progress</h2>
+<p>Stages are the runbook's. Put your initials and the date when you complete one.</p>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Step</th><th>Verify it worked</th><th>Evidence</th></tr>
-<tr><td>3.1</td><td>Add the private subnets in both AZs if they do not exist yet</td><td>Private route tables have no route to the internet gateway</td><td>&nbsp;</td></tr>
-<tr><td>3.2</td><td>Create the RDS MySQL instance in the private DB subnet group, enhanced monitoring off</td><td>Status is Available and Publicly accessible reads No</td><td>SEC-1</td></tr>
-<tr><td>3.3</td><td>Set backup retention on the RDS instance</td><td>Backup settings visible on the Maintenance and backups tab</td><td>HA-2</td></tr>
-<tr><td>3.4</td><td>Create the Cloud9 environment (t3.micro, SSH)</td><td>Terminal opens and the AWS CLI responds</td><td>&nbsp;</td></tr>
-<tr><td>3.5</td><td>Create the Secrets Manager secret using Script-1</td><td>Secret is listed and the value retrieves successfully from the CLI</td><td>SEC-2</td></tr>
-<tr><td>3.6</td><td>Launch the app server instance with the App Server solution code and attach LabInstanceProfile</td><td>The instance can read the secret without any hardcoded password</td><td>SEC-2</td></tr>
-<tr><td>3.7</td><td>Migrate the data from the original EC2 database into RDS using Script-3</td><td>Row counts in RDS match what was in the original database</td><td>F-3</td></tr>
-<tr><td>3.8</td><td>Re-test all four record operations against RDS</td><td>Writes persist, and the data is visible when queried directly against the RDS endpoint</td><td>F-2</td></tr>
+<tr><th>Stage</th><th>[Member 1]</th><th>[Member 2]</th><th>[Member 3]</th><th>Notes</th></tr>
+<tr><td>01 Lab start, pin region</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>02 VPC and six subnets</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HA-1</td></tr>
+<tr><td>03 IGW, NAT, three route tables</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-1, HA-1</td></tr>
+<tr><td>04 Four security groups</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-1</td></tr>
+<tr><td>05 Cloud9</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Add the two pending 3306 rules here</td></tr>
+<tr><td>06 RDS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HA-2, SEC-1. Start early, takes 5-10 min.</td></tr>
+<tr><td>07 Secret (Script-1)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-2</td></tr>
+<tr><td>08 Phase-2 POC instance</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence F-1, F-2</td></tr>
+<tr><td>09 Migrate data (Script-3)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence F-3. See issue I-02.</td></tr>
+<tr><td>10 App Server on RDS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-2, F-2. See issue I-01 before starting.</td></tr>
+<tr><td>11 AMI</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Test a reboot before imaging</td></tr>
+<tr><td>12 Launch template</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SC-1. Leave the subnet blank.</td></tr>
+<tr><td>13 Target group and ALB</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence LB-1, F-1</td></tr>
+<tr><td>14 Auto Scaling group</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence LB-2, SC-1</td></tr>
+<tr><td>15 Flow logs</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence SEC-1</td></tr>
+<tr><td>16 Load test</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence HP-1, HP-2, SC-2. Budget a full hour.</td></tr>
+<tr><td>17 Lock down and cost</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Evidence CO-1, CO-2</td></tr>
 </table>
 
-<h3>Phase 4: High availability and scaling</h3>
+<h2>4. Decision log</h2>
+<p>This section feeds the design rationale and cost sections of the report, so recording the reason now saves inventing one later.</p>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Step</th><th>Verify it worked</th><th>Evidence</th></tr>
-<tr><td>4.1</td><td>Create the target group and the internet-facing ALB across both AZs</td><td>Listener on HTTP:80 forwards to the target group</td><td>LB-1</td></tr>
-<tr><td>4.2</td><td>Create an AMI from the working app instance</td><td>AMI status is available</td><td>&nbsp;</td></tr>
-<tr><td>4.3</td><td>Create the launch template from that AMI, with the app security group and LabInstanceProfile</td><td>A test instance launched from the template serves the application</td><td>SC-1</td></tr>
-<tr><td>4.4</td><td>Create the Auto Scaling group across both AZs, attached to the target group</td><td>Targets show healthy in the target group, in two different AZs</td><td>LB-2, SC-1</td></tr>
-<tr><td>4.5</td><td>Add the target tracking scaling policy</td><td>Policy appears on the Automatic scaling tab</td><td>SC-1</td></tr>
-<tr><td>4.6</td><td>Open the application through the ALB DNS name and re-test all four operations</td><td>Application works through the load balancer, not just the instance IP</td><td>F-1, F-2</td></tr>
-<tr><td>4.7</td><td>Run the load test (Script-2) against the ALB DNS name</td><td>CPU rises, the group scales out, new instances become healthy</td><td>HP-1, HP-2, SC-2</td></tr>
-<tr><td>4.8</td><td>Record per-instance metrics during the test</td><td>Both instances show traffic, which proves distribution</td><td>LB-2</td></tr>
-<tr><td>4.9</td><td>Leave it idle after the test to capture scale-in</td><td>Group returns toward the minimum after the cooldown</td><td>SC-2</td></tr>
-</table>
-
-<h2>4. Per-member progress</h2>
-<p>Update your own row as you go. Put the date you completed each phase, or a short note on where you are stuck.</p>
-<table border="1" cellpadding="6" cellspacing="0">
-<tr><th>Member</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th><th>Phase 4</th><th>Current blocker</th></tr>
-<tr><td>[Member 1]</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-<tr><td>[Member 2]</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-<tr><td>[Member 3]</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-</table>
-
-<h2>5. Decision log</h2>
-<p>Anything we chose deliberately goes here, with the reason. This section feeds directly into the design rationale and cost sections of the report, so writing it down now saves inventing justifications later.</p>
-<table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Date</th><th>Decision</th><th>Reason</th><th>Decided by</th></tr>
-<tr><td>D-01</td><td>[  ]</td><td>App instances in public or private subnets</td><td>Private subnets are the better design, but they need a NAT gateway for outbound access, which costs money hourly whether or not it is used. If the budget will not carry it, the alternative is public subnets with the app security group restricted to the ALB only.</td><td>[  ]</td></tr>
-<tr><td>D-02</td><td>[  ]</td><td>ASG minimum of 2</td><td>One instance cannot survive an instance or AZ failure, so 2 is the smallest resilient size rather than spare capacity.</td><td>[  ]</td></tr>
-<tr><td>D-03</td><td>[  ]</td><td>Single-AZ database</td><td>Permitted by the assignment scope, and Multi-AZ roughly doubles the database cost for a standby that serves no traffic. Recorded as a known limitation in the report.</td><td>[  ]</td></tr>
+<tr><th>ID</th><th>Date</th><th>Decision</th><th>Reason</th><th>By</th></tr>
+<tr><td>D-01</td><td>[  ]</td><td>One NAT gateway, not one per AZ</td><td>Two would remove the cross-AZ egress dependency but roughly double that line item. Outbound traffic here is only package updates and Secrets Manager calls, so the saving is worth the dependency. Named as a limitation in the report.</td><td>[  ]</td></tr>
+<tr><td>D-02</td><td>[  ]</td><td>ASG minimum of 2</td><td>An availability floor, not a performance figure. One instance cannot survive an instance or AZ failure.</td><td>[  ]</td></tr>
+<tr><td>D-03</td><td>[  ]</td><td>ASG maximum of 4</td><td>The Learner Lab caps concurrent instances at 9, and 4 bounds what a load test or a spike can cost.</td><td>[  ]</td></tr>
+<tr><td>D-04</td><td>[  ]</td><td>Single-AZ RDS</td><td>Multi-AZ is blocked in the Learner Lab, and the brief assumes single-AZ. Multi-AZ is named as the first production step in the report.</td><td>[  ]</td></tr>
+<tr><td>D-05</td><td>[  ]</td><td>App instances in private subnets, reaching AWS APIs through the NAT gateway</td><td>No direct inbound path from the internet regardless of security group rules. This is the strongest C4 and C5 evidence in the build.</td><td>[  ]</td></tr>
+<tr><td>D-06</td><td>[  ]</td><td>WAF kept in the diagram but not deployed</td><td>Often not permitted in the Learner Lab. Labelled as a designed control that lab restrictions prevented deploying. Shield Standard is automatic on the ALB.</td><td>[  ]</td></tr>
 <tr><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td></tr>
 </table>
 
-<h2>6. Issue log</h2>
-<p>Record problems even after solving them, because the other two will probably hit the same thing.</p>
+<h2>5. Issue log</h2>
+<p>The first two are known before anyone starts. Add yours as you hit them.</p>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>Date</th><th>Who</th><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
-<tr><td>I-01</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><th>ID</th><th>Stage</th><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+<tr><td>I-01</td><td>10</td><td>App Server loads but shows no student records, or errors on any database operation. The secret fetch itself succeeds.</td><td>The runbook launches this instance with Build-SG only, but DB-SG accepts 3306 from App-SG and the Cloud9 SG, not from Build-SG. The instance can reach Secrets Manager but is refused by RDS.</td><td>Attach both App-SG and Build-SG to the instance. Security groups are instance-level and are not baked into the AMI, so stages 11 and 12 are unaffected, and nothing extra needs removing at stage 17.</td></tr>
+<tr><td>I-02</td><td>09</td><td>mysqldump hangs and then times out.</td><td>Build-SG is missing the 3306-from-Cloud9 rule, which is added at stage 05 rather than stage 04.</td><td>Add the rule, then rerun. If instead it is refused instantly, MySQL is not accepting remote connections, so check the bind-address line in the user data actually ran.</td></tr>
+<tr><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td><td>[  ]</td></tr>
 </table>
 
-<h2>7. Evidence tracker</h2>
-<p>These are the evidence IDs the assignment brief requires. Tick each one off when the screenshot is captured and saved somewhere the group can reach it.</p>
+<h2>6. Evidence tracker</h2>
 <table border="1" cellpadding="6" cellspacing="0">
-<tr><th>ID</th><th>What it must prove</th><th>Captured by</th><th>Where it is saved</th></tr>
-<tr><td>F-1</td><td>Application reachable at the ALB DNS name</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>F-2</td><td>View, add, edit and delete all working</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>F-3</td><td>Migrated data present in RDS</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>LB-1</td><td>ALB, listener and target group configuration</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>LB-2</td><td>Healthy targets in two AZs, and traffic reaching both</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>SC-1</td><td>Launch template, ASG limits and scaling policy</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>SC-2</td><td>Scale-out, and scale-in if captured</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>HA-1</td><td>Architecture diagram</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>HA-2</td><td>RDS backup settings</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>SEC-1</td><td>Security group rules for all three tiers</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>SEC-2</td><td>Secrets Manager secret and how the app reads it</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-1</td><td>12-month Pricing Calculator estimate</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-2</td><td>Sizing rationale</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>HP-1</td><td>Load test method</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>HP-2</td><td>Load test results</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>DEMO-1</td><td>Who built what, and each person's demo role</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><th>ID</th><th>What it must prove</th><th>Stage</th><th>Captured by</th><th>Saved where</th></tr>
+<tr><td>F-1</td><td>Public URL / ALB DNS reachable</td><td>08, 13</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>F-2</td><td>View, add, edit, delete</td><td>08, 10</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>F-3</td><td>Migrated data present in RDS</td><td>09</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>LB-1</td><td>ALB, listener, target group config</td><td>13</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>LB-2</td><td>Healthy targets in two AZs</td><td>14</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>SC-1</td><td>Launch template, ASG limits, scaling policy</td><td>12, 14</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>SC-2</td><td>Scale-out and scale-in activity history</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>HA-1</td><td>Architecture diagram, public and private across 2 AZs</td><td>02, 03</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>HA-2</td><td>RDS backup and recovery settings</td><td>06</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>SEC-1</td><td>Security group rules for all three tiers</td><td>04, 15</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>SEC-2</td><td>Mydbsecret created and used by the app</td><td>07, 10</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-1</td><td>12-month Pricing Calculator export</td><td>17</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-2</td><td>Sizing rationale</td><td>17</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>HP-1</td><td>Load test method, tool, duration</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>HP-2</td><td>Latency, throughput, errors, scaling</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>DEMO-1</td><td>Who built what, and who demos what</td><td>&mdash;</td><td>[  ]</td><td>[  ]</td></tr>
+</table>
+
+<h2>7. Still to schedule</h2>
+<p>Neither the runbook nor this log covers these yet, and all three are marked work.</p>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>Item</th><th>Why it matters</th><th>Owner</th><th>Due</th></tr>
+<tr><td>Architecture diagram drawn before building</td><td>The brief treats Phase 1 as planning, and HA-1 depends on it. The runbook starts at the console.</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>First-pass cost estimate before building</td><td>The brief says cost is a design constraint and the architecture should change if the estimate does not fit. Doing it only at stage 17 makes it a report artifact rather than a design input.</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>Presentation slides from Academy_Lab_Projects_Showcase_template.pptx</td><td>Listed in the report contents and converted to PDF for submission.</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>Individual evidence for D2 and D3</td><td>Marked per student, not shared. Tutorial and practical submissions, plus guided and challenge lab completion.</td><td>all three</td><td>[  ]</td></tr>
+<tr><td>Group contract and member profile page</td><td>Required in the report structure.</td><td>[  ]</td><td>[  ]</td></tr>
 </table>
 
 <h2>8. Log change history</h2>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Version</th><th>Date</th><th>Change</th></tr>
-<tr><td>v1</td><td>1 Sep 2026</td><td>Log created. Build procedure is the reference sequence from the assignment brief, still to be reconciled with the teammate document.</td></tr>
+<tr><td>v1</td><td>1 Sep 2026</td><td>Log created with a reference procedure from the assignment brief.</td></tr>
+<tr><td>v2</td><td>1 Sep 2026</td><td>Reconciled with the 17-stage build runbook. Real names and script-fixed values recorded, stage progress tracker replaces the generic procedure, decision log filled from the runbook's stated choices, issue log pre-populated with the stage 10 security group gap and the stage 09 timeout, and a section added for work neither document covers.</td></tr>
 </table>
