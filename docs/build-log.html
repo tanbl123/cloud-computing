@@ -63,6 +63,18 @@
 <tr><td>RDS master password</td><td>[agree one and record where it is kept, not here]</td><td>Chosen by us, stored in Mydbsecret</td></tr>
 </table>
 
+<h2>2.3 Lab scripts, and which stage uses each</h2>
+<p>The three files live in the shared Google Drive folder, not in this repository, because they are AWS Academy course materials. Contents are not reproduced here.</p>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr><th>File</th><th>Used at</th><th>What it does</th></tr>
+<tr><td><code>cloud9scripts.yml</code> &rarr; Script-1</td><td>Stage 07</td><td>Creates the <code>Mydbsecret</code> secret. Placeholders to replace: username, password, RDS endpoint, database name.</td></tr>
+<tr><td><code>cloud9scripts.yml</code> &rarr; Script-2</td><td>Stage 16</td><td>Installs the loadtest package and runs <code>loadtest --rps 1000 -c 500 -k &lt;ELB URL&gt;</code>. Ctrl+C to stop.</td></tr>
+<tr><td><code>cloud9scripts.yml</code> &rarr; Script-3</td><td>Stage 09</td><td>The migration pair. <code>mysqldump</code> from the POC private IP using <b>student12</b>, then <code>mysql</code> import into RDS using the <b>RDS master password</b>. Two different passwords.</td></tr>
+<tr><td><code>UserdataScriptphase2.sh</code></td><td>Stage 08</td><td>Paste unchanged. Installs Node and MySQL server, downloads the codebase, creates nodeapp/student12, the STUDENTS database and a seven-column students table, sets bind-address to 0.0.0.0 so Cloud9 can dump it, and starts the app on port 80.</td></tr>
+<tr><td><code>UserdataScriptphase3.sh</code></td><td>Stage 10</td><td><b>Use this rather than hand-editing phase 2.</b> It is the App Server code: mysql-client instead of mysql-server, no database creation, and no APP_DB_* variables or metadata call at all. With no environment fallback, the credential can only come from Secrets Manager through the instance role, which makes the C5 argument cleanly.</td></tr>
+</table>
+<p>Because phase 3 never reads database settings from environment variables, its <code>rc.local</code> re-exporting only <code>APP_PORT</code> is sufficient for reboot survival. Still test a reboot before imaging at stage 11.</p>
+
 <h2>3. Stage progress</h2>
 <p>Stages are the runbook's. Put your initials and the date when you complete one.</p>
 <table border="1" cellpadding="6" cellspacing="0">
