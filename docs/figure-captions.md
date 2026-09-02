@@ -77,6 +77,13 @@ inside `asm-VPC`. Cloud9 provided the only command line available in the lab env
 to create the Secrets Manager secret, perform the database migration, and generate load during
 performance testing.
 
+## Stage 06 — Amazon RDS
+
+**Figure 11.** *(Evidence HA-2)* The DB subnet group `asm-db-subnet-group`, spanning `asm-DB-A` in
+`us-east-1a` and `asm-DB-B` in `us-east-1b`. Amazon RDS requires a subnet group covering at least two
+Availability Zones before a database can be created, which is why the second database subnet exists
+even though this deployment runs a single-AZ instance.
+
 ---
 
 ## Note on the DB-SG screenshot
