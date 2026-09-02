@@ -60,7 +60,8 @@ teammate wants their own copy.
 | RDS master username | nodeapp |
 | RDS master password | **do not write it here** — agree where the group keeps it |
 | RDS instance | `asm-rds` · db.t3.micro · MySQL Community · us-east-1a · encryption at rest on |
-| Secret ARN | arn:aws:secretsmanager: |
+| Secret ARN | `arn:aws:secretsmanager:us-east-1:401858547100:secret:Mydbsecret-xenf8e` |
+| Secret created | 2 Sep 2026 08:29 UTC |
 
 ## Stage 08 to 11, instances
 

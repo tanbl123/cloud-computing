@@ -94,6 +94,14 @@ a seven-day retention period, and the first automated snapshot has already been 
 configuration is demonstrably working rather than merely set. This supports point-in-time recovery to
 any moment within the retention window.
 
+## Stage 07 — Secrets Manager
+
+**Figure 14.** *(Evidence SEC-2)* The secret `Mydbsecret` in AWS Secrets Manager, holding the database
+username, password, host endpoint and database name. The `describe-secret` call returns the secret's
+identity and metadata but never its value, which is itself a demonstration of the access model: the
+credential can be referenced and audited without being read. The application retrieves the value at
+runtime through the IAM role attached to its instance profile.
+
 ---
 
 ## Note on the DB-SG screenshot
