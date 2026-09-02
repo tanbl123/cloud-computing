@@ -56,9 +56,10 @@ teammate wants their own copy.
 
 | Item | Value |
 |---|---|
-| RDS endpoint | |
+| RDS endpoint | `asm-rds.ch9e5pk57w5b.us-east-1.rds.amazonaws.com` port 3306 |
 | RDS master username | nodeapp |
 | RDS master password | **do not write it here** — agree where the group keeps it |
+| RDS instance | `asm-rds` · db.t3.micro · MySQL Community · us-east-1a · encryption at rest on |
 | Secret ARN | arn:aws:secretsmanager: |
 
 ## Stage 08 to 11, instances

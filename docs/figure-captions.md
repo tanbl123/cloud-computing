@@ -84,6 +84,16 @@ performance testing.
 Availability Zones before a database can be created, which is why the second database subnet exists
 even though this deployment runs a single-AZ instance.
 
+**Figure 12.** *(Evidence SEC-1)* Connectivity configuration of the `asm-rds` database instance.
+Publicly accessible is set to No and the only attached security group is `DB-SG`, so the database has
+no public IP address and accepts connections only from the sources named in that group. The instance
+sits in the private subnets of `asm-db-subnet-group`, which have no route to the internet.
+
+**Figure 13.** *(Evidence HA-2)* Backup configuration of `asm-rds`. Automated backups are enabled with
+a seven-day retention period, and the first automated snapshot has already been taken, so the
+configuration is demonstrably working rather than merely set. This supports point-in-time recovery to
+any moment within the retention window.
+
 ---
 
 ## Note on the DB-SG screenshot
