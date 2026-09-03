@@ -321,13 +321,6 @@ rising to nearly 50,000, tracking the three load tiers in sequence.
 resting 0.2% to a peak of 96.68% during the peak-load run. This confirms the application tier itself was
 genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
 
-**Figure 48.** *(Evidence SC-2, C3)* Healthy and unhealthy host counts for `App-TG` over the test
-window, plotted directly from the target group's own metrics rather than a single snapshot. Healthy
-hosts rise from 2 toward 4 as the variable-load run triggers scale-out, then a brief dip in healthy hosts
-coincides exactly with a spike to 3 unhealthy hosts around the peak-load run, corresponding to the
-health-check failures shown individually in Figure 47. Both metrics recover fully within minutes, healthy
-hosts returning to 4, confirming the group's self-healing completed cleanly without manual intervention.
-
 **Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets shortly after the
 peak-load run ended. Two instances present since before testing, `i-0616dfb6b419bf5ba` and
 `i-0e639be3baa568e2b`, are Draining as the Auto Scaling group begins scaling back in. Two instances that
@@ -339,6 +332,13 @@ lightweight `/` path, and the Auto Scaling group terminated and replaced it auto
 demonstrates a second, independent recovery mechanism operating alongside target-tracking scaling: the
 group not only adds capacity in response to demand, it also detects and replaces instances that fail
 outright under load.
+
+**Figure 48.** *(Evidence SC-2, C3)* Healthy and unhealthy host counts for `App-TG` over the test
+window, plotted directly from the target group's own metrics rather than a single snapshot. Healthy
+hosts rise from 2 toward 4 as the variable-load run triggers scale-out, then a brief dip in healthy hosts
+coincides exactly with a spike to 3 unhealthy hosts around the peak-load run, corresponding to the
+health-check failures shown individually in Figure 47. Both metrics recover fully within minutes, healthy
+hosts returning to 4, confirming the group's self-healing completed cleanly without manual intervention.
 
 ---
 
