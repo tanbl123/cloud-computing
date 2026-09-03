@@ -102,6 +102,14 @@ identity and metadata but never its value, which is itself a demonstration of th
 credential can be referenced and audited without being read. The application retrieves the value at
 runtime through the IAM role attached to its instance profile.
 
+## Stage 08 — Phase-2 proof of concept
+
+**Figure 15.** *(Evidence F-1)* The student records application running on the single EC2 instance
+`CapstonePOC` in `asm-Public-A`, reached directly by its public IPv4 address. This is the Phase 2
+proof of concept required by the project brief: the application and its database on one virtual
+machine, before the tiers were separated. The connection is plain HTTP, which the assignment scope
+permits for a proof of concept.
+
 ---
 
 ## Note on the DB-SG screenshot
