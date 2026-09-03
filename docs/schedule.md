@@ -74,6 +74,31 @@ C7 discussion around the load test numbers. Also the slides from the showcase te
 
 **Mon 7 to Sun 13 Sep** — Record the video. The stack stays up. Delete everything afterwards.
 
+## Run sheet for the stage 13 to 17 session
+
+Stages 1 to 12 are done. What remains is roughly two and a half hours of console work, which fits
+inside one lab session. Two pieces do not need the lab open at all, so do them beforehand and save the
+lab time for the console: the AWS Pricing Calculator estimate that stage 17 asks for, and the
+architecture diagram in Lucidchart using `architecture-diagram-spec.md`.
+
+**Before touching anything, two minutes of setup.** Check that Build-SG's My IP rules match where you
+are sitting today (issue I-05 bites on every network change). Note the new public IPs for App-Server
+and Cloud9, since a stopped instance always comes back on a new address. Open the Cloud9 environment
+and let it finish initialising, because stage 16 needs it and it takes a minute to wake.
+
+| Stage | Allow | Where the time goes |
+|---|---|---|
+| 13 Target group and ALB | 20 to 25 min | The load balancer takes 3 to 5 minutes to provision before it will serve anything. |
+| 14 Auto Scaling group | 15 to 20 min | The 300-second health check grace period runs before instances report healthy. Do not panic at initial or unhealthy inside that window. |
+| 15 Flow logs | under 10 min | Straightforward. |
+| 16 Load test | a full hour | Target tracking reacts over several minutes, and scale-in is slower than scale-out. Take the baseline reading before generating any load, and leave 10 to 15 minutes idle at the end for scale-in evidence. |
+| 17 Lock down and cost | 20 min in console | Only if the Pricing Calculator work is already done. Remember the I-03 ordering fix: remove the Build-SG source from DB-SG **before** deleting Build-SG. |
+
+**Order matters in two places.** Stage 14 terminates App-Server, so do not start it until the Auto
+Scaling instances are serving traffic through the load balancer; if the image turns out to be wrong you
+will want App-Server still there. And do not delete Cloud9 at stage 14 or 17 until the load test is
+finished, since it is the machine that generates the load.
+
 ## If you fall behind
 
 Talk to the group before dropping anything, since all three of you are meant to end up with the
