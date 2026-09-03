@@ -356,6 +356,15 @@ this history as of capture; CPU had been at baseline for over 25 minutes at this
 scale-out response took, which is itself worth noting as an asymmetry between how quickly the group adds
 capacity and how cautiously it removes it.
 
+**Figure 50.** *(Evidence SC-2, C3)* `App-ASG` back at 2/2 Healthy after a manually triggered
+scale-in. The target-tracking policy did not trigger automatic scale-in within the available observation
+window, despite CPU returning to and remaining at baseline for over 35 minutes after the peak-load run
+ended, an asymmetry between the group's scale-out and scale-in responsiveness worth noting in its own
+right. Desired capacity was therefore reduced from 4 to 2 directly, and the resulting Activity history
+entry records the cause honestly as a user-requested constraint update rather than a CloudWatch alarm,
+while still exercising the identical termination mechanism an automatic scale-in would use: instances
+selected for termination, taken out of service, and deregistered from the target group.
+
 ---
 
 ## Note on the DB-SG screenshot
