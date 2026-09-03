@@ -124,7 +124,7 @@ being stopped and started, so this is the address to put in the report and use f
 |---|---|---|---|---|---|---|---|
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
 | Normal | 50 | 50 | 15.9 | 40 | 0 | 2 | 2 |
-| Variable | 250 | | | | | | |
+| Variable | 250 | 250 | 577.7 | 2338 | 361 | 2 | see below |
 | Peak | 1000 | | | | | | |
 
 Time from load starting to a new instance serving traffic: ______
