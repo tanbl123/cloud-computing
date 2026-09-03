@@ -65,6 +65,13 @@ teammate wants their own copy.
 
 ## Stage 08 to 11, instances
 
+> **Public IPs change between lab sessions.** Ending the lab, or letting the timer run out, stops every
+> EC2 instance. They start again with new public IPv4 addresses. The values below are the ones that were
+> live when the figures were captured, so treat them as a record of that session rather than as
+> addresses to browse to today. Nothing breaks, because every security group rule references another
+> security group rather than an address. Private IPs, instance IDs, the RDS endpoint, the secret ARN,
+> the AMI ID and the launch template ID are all stable.
+
 | Item | Value |
 |---|---|
 | CapstonePOC public IP | 52.206.157.249 |
