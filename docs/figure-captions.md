@@ -214,6 +214,31 @@ the deployment tolerant of the loss of either one.
 specified, since the application and its start-up entry are already contained in the machine image, and
 no credentials appear anywhere in the template.
 
+## Stage 13 - Target group and load balancer
+
+**Figure 31.** *(Evidence LB-1, C2)* The `App-TG` target group, configured for HTTP traffic on port 80
+within `asm-VPC` and associated with the `asm-ALB` load balancer. Instances are registered to this group
+automatically by the Auto Scaling group rather than by hand, so that capacity added or removed by
+scaling is reflected in the load balancer without manual intervention.
+
+**Figure 32.** *(Evidence LB-1, C2)* The health check configuration of `App-TG`. The load balancer
+requests the application root path over HTTP every thirty seconds and expects a 200 response. A target
+is considered healthy after five consecutive successes and is removed from rotation after two
+consecutive failures, at which point the Auto Scaling group replaces it. This is the mechanism that
+makes the deployment self-healing rather than merely redundant.
+
+**Figure 33.** *(Evidence LB-1, C2)* The `asm-ALB` Application Load Balancer in the Active state. It is
+internet-facing and spans two availability zones, with a node in `asm-Public-A` in `us-east-1a` and
+another in `asm-Public-B` in `us-east-1b`, so the loss of an entire zone does not remove the entry point
+to the application. Its DNS name is the single public address for the system and remains stable when the
+instances behind it are replaced.
+
+**Figure 34.** *(Evidence LB-1, C2)* The listener on `asm-ALB`, accepting HTTP requests on port 80 and
+forwarding all of them to the `App-TG` target group. Because routing is defined against a target group
+rather than against named instances, the load balancer requires no reconfiguration when the Auto Scaling
+group adds or removes capacity. Target group stickiness is off, which is appropriate because the
+application holds no session state of its own and any instance can serve any request.
+
 ---
 
 ## Note on the DB-SG screenshot
