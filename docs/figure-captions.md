@@ -150,10 +150,13 @@ by which the instance is able to obtain database credentials, as no credentials 
 on the instance itself.
 
 **Figure 23.** *(Evidence SEC-2)* The user data script with which the App Server was built, retrieved
-from the instance attribute using the AWS CLI. No database hostname, username or password appears
-anywhere in it. The script installs the MySQL client only, creates no local database, and sets no
-database environment variables, so the application has no local source of credentials and no local
-database to fall back on.
+directly from the instance attribute using the AWS CLI. The script installs the MySQL client only, with
+no database server, and the sole environment variable it sets is `APP_PORT`. No database hostname,
+username or password appears anywhere in it, so the application has neither a local database nor any
+stored credential to fall back on and must obtain its credentials from AWS Secrets Manager at run time.
+The closing lines register the application start command in `/etc/rc.local`, which is what allows the
+instance to serve traffic after a restart and, in turn, allows the machine image created in Stage 11 to
+launch unattended.
 
 > How to take Figure 23. The console route, Actions then Instance settings then Edit user data, refuses
 > to open the editor while the instance is running. Retrieve the attribute from Cloud9 instead:
