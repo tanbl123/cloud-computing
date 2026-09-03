@@ -134,6 +134,14 @@ confirming the managed database was still empty at this point. The record identi
 with no 7, showing that the deletion demonstrated in Figure 19 removed the row from the database
 rather than only from the page.
 
+## Stage 09 — Migration
+
+**Figure 21.** *(Evidence F-3, after migration)* The migration and its verification. The first command
+exports the `STUDENTS` database from the phase-2 instance at `10.0.0.184`, the second imports it into
+Amazon RDS, and the third queries the RDS endpoint directly and returns all six records with every
+column intact. Read against Figure 20, where the same RDS query returned no tables at all, this
+confirms the data was moved into the managed database rather than having been created there.
+
 ---
 
 ## Note on the DB-SG screenshot
