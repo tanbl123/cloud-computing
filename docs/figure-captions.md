@@ -282,6 +282,57 @@ against Cloud9's interface are unrelated internet background scanning traffic on
 3389, refused by the security group rather than reaching the instance, which demonstrates the security
 groups filtering unsolicited traffic in practice rather than only in configuration.
 
+## Stage 16 - Load test
+
+**Figure 41.** *(Evidence HP-2)* The browser's Network panel timing for a single request to
+`/students` with no load on the system, used as the baseline for comparison. The request completed in
+622.27 ms overall, of which 242.10 ms was connection setup (DNS lookup and initial TCP connection,
+unavoidable on a fresh connection) and 359.87 ms was time waiting for the server's response, the closest
+measure to genuine application and database latency. The load test itself uses persistent keep-alive
+connections, so its reported latencies are not directly comparable to this cold-connection figure, but
+the 359.87 ms waiting time is the fair point of reference.
+
+**Figure 42.** *(Evidence HP-1)* The normal-load run: 50 requests per second sustained for 120 seconds
+against `/students`, completing all 6,000 requests with zero errors and a mean latency of 15.9 ms. The
+system absorbed this load without any visible strain.
+
+**Figure 43.** *(Evidence HP-1)* The variable-load run: 250 requests per second sustained for 180
+seconds. Mean latency rose to 577.7 ms, roughly 36 times the normal-run figure, with a p95 of 2,338 ms
+and 361 errors out of 44,949 completed requests (0.8%). The tool needed 644 concurrent clients to sustain
+the target rate, against 17 at the lighter tier, reflecting how much slower each individual response had
+become. This run crossed the Auto Scaling group's CPU threshold and triggered a scale-out to its
+configured maximum of four instances.
+
+**Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds,
+run against an Auto Scaling group already at its maximum of four instances. Mean latency reached 4,002.9
+ms, p95 reached 16,497 ms, and 89,101 of 177,318 completed requests failed (50.4%), the great majority as
+connection-level failures rather than HTTP error responses. Read together with Figure 46, where CPU
+utilization reaches 96.68% at this same point, the evidence points to the application tier and the
+single-instance database both approaching their limits together: the Auto Scaling group had no further
+capacity to add, and a database with a fixed, small connection ceiling cannot be relieved by adding more
+application servers in front of it. This is the architecture's genuine capacity limit, not a
+misconfiguration.
+
+**Figure 45.** *(Evidence HP-2)* The Application Load Balancer's Target Response Time and Request Count
+over the test window, showing the response time climbing to a peak of 5.4 seconds and request volume
+rising to nearly 50,000, tracking the three load tiers in sequence.
+
+**Figure 46.** *(Evidence HP-2)* CPU Utilization for `App-ASG` over the same window, climbing from a
+resting 0.2% to a peak of 96.68% during the peak-load run. This confirms the application tier itself was
+genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
+
+**Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets shortly after the
+peak-load run ended. Two instances present since before testing, `i-0616dfb6b419bf5ba` and
+`i-0e639be3baa568e2b`, are Draining as the Auto Scaling group begins scaling back in. Two instances that
+launched during the variable-load run, `i-0a36b41e27175b3e9` and `i-011671499ab7bcf5`, are Healthy. Two
+further instances, `i-057f2818dadba42e6` and `i-0abcee58aee559299`, are new IDs not seen at any earlier
+stage; the latter is Unhealthy with reason "Request timed out". These are replacement instances: under
+the CPU saturation shown in Figure 46, at least one running instance failed its health check on the
+lightweight `/` path, and the Auto Scaling group terminated and replaced it automatically. This
+demonstrates a second, independent recovery mechanism operating alongside target-tracking scaling: the
+group not only adds capacity in response to demand, it also detects and replaces instances that fail
+outright under load.
+
 ---
 
 ## Note on the DB-SG screenshot
