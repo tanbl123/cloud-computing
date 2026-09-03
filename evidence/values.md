@@ -95,7 +95,13 @@ teammate wants their own copy.
 
 | Item | Value |
 |---|---|
-| ALB DNS name | |
+| **ALB DNS name (the submitted URL)** | `asm-ALB-743581282.us-east-1.elb.amazonaws.com` |
+| ALB | `asm-ALB`, internet-facing, IPv4, HTTP:80 listener forwarding to App-TG, ALB-SG only, in asm-Public-A and asm-Public-B, created 3 Sep 2026 20:38 GMT+8 |
+| Target group | `App-TG`, HTTP:80, HTTP1, target type Instance, health check `/` every 30s, success 200, in asm-VPC |
+| Target group ARN | `arn:aws:elasticloadbalancing:us-east-1:401858547100:targetgroup/App-TG/68dfde1ef7d02f85` |
+
+Unlike an instance public IP, the ALB DNS name is stable across lab sessions. It survives the stack
+being stopped and started, so this is the address to put in the report and use for the video.
 
 ## Stage 16, load test results
 
