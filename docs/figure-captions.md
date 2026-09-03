@@ -181,7 +181,11 @@ environment directly against the Amazon RDS endpoint. As Cloud9 is a separate in
 database rather than the application, this confirms that the record created in Figure 25 was persisted
 to the managed database and not to storage local to the App Server. The separation of the application
 tier from the data tier is what allows any web server to be replaced without loss of data, which is the
-property the Auto Scaling group depends upon in Stage 14.
+property the Auto Scaling group depends upon in Stage 14. The gap between identifiers 6 and 9 is
+expected: identifiers 7 and 8 were consumed by records created and then deleted during the CRUD
+demonstration in Stage 8, and MySQL does not reissue an auto-increment value once used. That the new
+record continued the sequence from the phase-2 instance rather than restarting confirms that the
+migration carried the table's auto-increment state and not only its rows.
 
 **Figure 27.** *(Evidence F-2)* The application responding correctly after the App Server was rebooted.
 This verifies that the instance configuration survives a restart, which is a precondition for creating
