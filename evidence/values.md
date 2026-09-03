@@ -71,8 +71,11 @@ teammate wants their own copy.
 | CapstonePOC **private** IP (needed for the migration) | **10.0.0.184** |
 | CapstonePOC instance ID | `i-06968508821a04f04` (no IAM role, IMDSv2 optional, Ubuntu 24.04 LTS) |
 | Records added before migrating | how many: |
-| App-Server public IP | |
-| AMI ID | ami- |
+| App-Server instance ID | `i-0636b1e60f111d310` (IAM role LabRole via LabInstanceProfile, IMDSv2 optional, Ubuntu 24.04 LTS) |
+| App-Server public IP | 54.227.135.18 |
+| App-Server private IP | 10.0.0.120 |
+| App-Server placement | `asm-Public-A` (subnet-0cb19ed319b5dfa45), Build-SG, launched 3 Sep 2026 |
+| AMI ID (stage 11) | ami- |
 
 ## Stage 13, the submitted URL
 
