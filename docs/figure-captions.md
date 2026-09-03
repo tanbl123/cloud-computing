@@ -142,6 +142,40 @@ Amazon RDS, and the third queries the RDS endpoint directly and returns all six 
 column intact. Read against Figure 20, where the same RDS query returned no tables at all, this
 confirms the data was moved into the managed database rather than having been created there.
 
+## Stage 10 - The App Server on Amazon RDS
+
+**Figure 22.** *(Evidence SEC-2)* The App Server instance summary. The IAM role field shows `LabRole`,
+attached at launch through the `LabInstanceProfile` instance profile. This role is the only mechanism
+by which the instance is able to obtain database credentials, as no credentials of any kind are stored
+on the instance itself.
+
+**Figure 23.** *(Evidence SEC-2)* The user data script with which the App Server was built, viewed
+through the console. No database hostname, username or password appears anywhere in it. The script
+installs the MySQL client only, creates no local database, and sets no database environment variables,
+so the application has no local source of credentials and no local database to fall back on.
+
+**Figure 24.** *(Evidence F-2)* The application served by the App Server instance at `54.227.135.18`,
+displaying the six student records migrated to Amazon RDS in Stage 9. Because this instance runs no
+database engine and holds no credentials in its configuration, the records shown can only have been
+read from the managed database using the username and password retrieved from AWS Secrets Manager at
+run time.
+
+**Figure 25.** *(Evidence F-2)* A seventh student record created through the App Server. Read together
+with Figure 24, this demonstrates that the instance both reads from and writes to Amazon RDS, and that
+the application layer holds no state of its own.
+
+**Figure 26.** *(Evidence F-2)* The same seven records returned by a query issued from the Cloud9
+environment directly against the Amazon RDS endpoint. As Cloud9 is a separate instance querying the
+database rather than the application, this confirms that the record created in Figure 25 was persisted
+to the managed database and not to storage local to the App Server. The separation of the application
+tier from the data tier is what allows any web server to be replaced without loss of data, which is the
+property the Auto Scaling group depends upon in Stage 14.
+
+**Figure 27.** *(Evidence F-2)* The application responding correctly after the App Server was rebooted.
+This verifies that the instance configuration survives a restart, which is a precondition for creating
+the machine image in Stage 11, since every instance launched by the Auto Scaling group is created from
+that image and must start unattended.
+
 ---
 
 ## Note on the DB-SG screenshot
