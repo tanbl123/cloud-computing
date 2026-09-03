@@ -81,7 +81,7 @@ teammate wants their own copy.
 | App-Server instance ID | `i-0636b1e60f111d310` (IAM role LabRole via LabInstanceProfile, IMDSv2 optional, Ubuntu 24.04 LTS) |
 | App-Server public IP | 54.227.135.18 |
 | App-Server private IP | 10.0.0.120 |
-| App-Server placement | `asm-Public-A` (subnet-0cb19ed319b5dfa45), Build-SG, launched 3 Sep 2026 |
+| App-Server placement | `asm-Public-A` (subnet-0cb19ed319b5dfa45), Build-SG, launched 3 Sep 2026, **terminated 4 Sep 2026** after stage 16 |
 | AMI ID (stage 11) | `ami-0d28ed0cb650c6cf4` (App-Server-AMI-v1, Available 3 Sep 2026 15:59 GMT+8, source AMI `ami-0f8a61b66d1accaee`) |
 
 ## Stage 12, launch template
