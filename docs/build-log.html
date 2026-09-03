@@ -37,7 +37,7 @@
 <tr><td>Load balancer</td><td>asm-ALB</td><td>internet-facing, HTTP:80, ALB-SG, both public subnets</td><td>&nbsp;</td></tr>
 <tr><td>Auto Scaling group</td><td>App-ASG</td><td>min 2 / desired 2 / max 4, both app subnets, ELB health checks, grace 300s</td><td>&nbsp;</td></tr>
 <tr><td>Scaling policy</td><td>&nbsp;</td><td>target tracking, average CPU 50%, warmup 300s</td><td>&nbsp;</td></tr>
-<tr><td>Flow logs</td><td>/vpc/asm-flowlogs</td><td>all traffic, CloudWatch Logs, 1-week retention</td><td>&nbsp;</td></tr>
+<tr><td>Flow logs</td><td>asm-flowlogs</td><td>all traffic, <b>updated 3 Sep: destination S3</b> (bucket <code>asm-flowlogs-&lt;account-id&gt;</code>, each account needs its own bucket since names are globally unique), not CloudWatch Logs. See issue I-07: CloudWatch delivery fails via LabRole for every Academy Lab account, not just this one, so all three builds should use S3.</td><td>&nbsp;</td></tr>
 </table>
 
 <h3>2.1 Security groups</h3>
