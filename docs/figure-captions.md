@@ -149,10 +149,19 @@ attached at launch through the `LabInstanceProfile` instance profile. This role 
 by which the instance is able to obtain database credentials, as no credentials of any kind are stored
 on the instance itself.
 
-**Figure 23.** *(Evidence SEC-2)* The user data script with which the App Server was built, viewed
-through the console. No database hostname, username or password appears anywhere in it. The script
-installs the MySQL client only, creates no local database, and sets no database environment variables,
-so the application has no local source of credentials and no local database to fall back on.
+**Figure 23.** *(Evidence SEC-2)* The user data script with which the App Server was built, retrieved
+from the instance attribute using the AWS CLI. No database hostname, username or password appears
+anywhere in it. The script installs the MySQL client only, creates no local database, and sets no
+database environment variables, so the application has no local source of credentials and no local
+database to fall back on.
+
+> How to take Figure 23. The console route, Actions then Instance settings then Edit user data, refuses
+> to open the editor while the instance is running. Retrieve the attribute from Cloud9 instead:
+> `aws ec2 describe-instance-attribute --instance-id i-0636b1e60f111d310 --attribute userData --query "UserData.Value" --output text | base64 -d`
+> This prints the script that the instance was actually built with, straight from the EC2 API, which is
+> stronger evidence than a copy of the file. If you take it from the console after stopping the
+> instance instead, change "retrieved from the instance attribute using the AWS CLI" to "viewed through
+> the console" in the caption.
 
 **Figure 24.** *(Evidence F-2)* The application served by the App Server instance at `54.227.135.18`,
 displaying the six student records migrated to Amazon RDS in Stage 9. Because this instance runs no
