@@ -239,6 +239,33 @@ rather than against named instances, the load balancer requires no reconfigurati
 group adds or removes capacity. Target group stickiness is off, which is appropriate because the
 application holds no session state of its own and any instance can serve any request.
 
+## Stage 14 - Auto Scaling group
+
+**Figure 35.** *(Evidence LB-2, C2, C3)* The `App-TG` target group's registered targets, showing both
+Auto Scaling instances, `i-00c957897434a961` in `us-east-1a` and `i-0af80d429a31ff2a2` in `us-east-1b`,
+reporting Healthy. The differing Availability Zone values confirm that the Auto Scaling group
+distributed its instances across both zones as configured, and the Healthy status on each confirms the
+group's health checks and the application itself are both functioning correctly.
+
+**Figure 36.** *(Evidence F-1, C1)* The completed application served through `asm-ALB`, showing all
+seven student records. The address in the bar is the load balancer's DNS name, not an instance IP; the
+browser has no way of knowing, and does not need to know, which of the two instances behind it answered
+the request. This is the point at which the architecture becomes genuinely highly available: either
+instance can fail and the application remains reachable at the same address.
+
+**Figure 37.** *(Evidence SC-1, C3)* The `App-ASG` Auto Scaling group's details, showing a desired
+capacity of 2 with scaling limits of 2 to 4, at desired capacity with both instances healthy across two
+availability zones. The launch template panel confirms every instance the group creates inherits the
+verified `App-LT-v1` configuration, including the machine image, security group and instance profile,
+so scaling requires no manual configuration of new instances.
+
+**Figure 38.** *(Evidence SC-1, C3)* The target tracking scaling policy attached to `App-ASG`, configured
+to maintain average CPU utilization at 50 percent by adding or removing instances as required, with a
+300-second instance warmup before new instances contribute to the metric. Scale-in remains active (the
+"Scale in" field reports the disable-scale-in override as off, not that scaling in is disabled), so the
+group is expected to grow under the load test in Stage 16 and then shrink back toward its desired
+capacity once load subsides.
+
 ---
 
 ## Note on the DB-SG screenshot
