@@ -192,6 +192,15 @@ This verifies that the instance configuration survives a restart, which is a pre
 the machine image in Stage 11, since every instance launched by the Auto Scaling group is created from
 that image and must start unattended.
 
+## Stage 11 - The machine image
+
+**Figure 28.** *(Evidence SC-1)* The `App-Server-AMI-v1` machine image, `ami-0d28ed0cb650c6cf4`, in the
+Available state. It was created from the App Server instance only after that instance had been verified
+against Amazon RDS and shown to restart unattended. Every instance the Auto Scaling group launches in
+Stage 14 is created from this image, which is what allows capacity to be added or replaced with no
+manual configuration. The Source AMI ID shown, `ami-0f8a61b66d1accaee`, records that the image derives
+from Ubuntu Server 24.04 LTS.
+
 ---
 
 ## Note on the DB-SG screenshot
