@@ -266,6 +266,22 @@ to maintain average CPU utilization at 50 percent by adding or removing instance
 group is expected to grow under the load test in Stage 16 and then shrink back toward its desired
 capacity once load subsides.
 
+## Stage 15 - Flow logs
+
+**Figure 39.** *(Evidence SEC-1)* The `asm-flowlogs` VPC Flow Log configuration, capturing all traffic
+from `asm-VPC` and delivering it to the `asm-flowlogs-401858547100` S3 bucket. CloudWatch Logs was
+attempted first but its delivery failed because `LabRole`'s trust policy does not permit the VPC Flow
+Logs service to assume it (see the discussion of this constraint in section C5); S3 delivery requires no
+assumable role at all and was used instead.
+
+**Figure 40.** *(Evidence SEC-1)* A sample of delivered flow log records, decompressed directly from S3.
+The highlighted pair of ACCEPT records shows the Application Load Balancer's interface at `10.0.0.146`
+exchanging traffic on port 80 with an Auto Scaling instance at `10.0.3.14` in `asm-App-B`, confirming the
+load balancer is actively forwarding requests into the private application subnet. The REJECT records
+against Cloud9's interface are unrelated internet background scanning traffic on ports such as 22 and
+3389, refused by the security group rather than reaching the instance, which demonstrates the security
+groups filtering unsolicited traffic in practice rather than only in configuration.
+
 ---
 
 ## Note on the DB-SG screenshot
