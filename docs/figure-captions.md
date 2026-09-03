@@ -340,6 +340,22 @@ coincides exactly with a spike to 3 unhealthy hosts around the peak-load run, co
 health-check failures shown individually in Figure 47. Both metrics recover fully within minutes, healthy
 hosts returning to 4, confirming the group's self-healing completed cleanly without manual intervention.
 
+**Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history, spanning both the load test and
+an earlier, unrelated event. The `TargetTracking-App-ASG-AlarmHigh` alarm fired twice during the
+variable-load run, growing desired capacity from 2 to 3 at 18:54:25Z and from 3 to 4 at 18:56:25Z; each
+new instance took almost exactly 5 minutes 5 seconds to reach InService, closely matching the configured
+300-second warmup. During the peak-load run, two instances failed their ELB health check under the CPU
+saturation shown in Figure 46 and were automatically terminated and replaced. Separately, and hours
+before any load was applied, the two original instances from Stage 14 were replaced after an EC2 health
+check found them "terminated or stopped", almost certainly because the underlying instances were stopped
+by the Learner Lab platform during a session pause and resume (see issue I-08). Taken together, this
+single history demonstrates three distinct forms of resilience operating without manual intervention:
+scaling in response to demand, recovery from an application-level failure, and recovery from an
+infrastructure-level interruption outside the application's own control. No scale-in event appears in
+this history as of capture; CPU had been at baseline for over 25 minutes at this point, longer than the
+scale-out response took, which is itself worth noting as an asymmetry between how quickly the group adds
+capacity and how cautiously it removes it.
+
 ---
 
 ## Note on the DB-SG screenshot
