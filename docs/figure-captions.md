@@ -127,6 +127,13 @@ list reloaded afterwards showing the record gone and the six original records in
 Together Figures 16 to 19 demonstrate all four record operations required by the functional criterion,
 each verified by reloading the page after the write rather than by the form's own response.
 
+**Figure 20.** *(Evidence F-3, before migration)* The state of both databases before the migration. The
+upper query, run against the phase-2 instance at `10.0.0.184`, returns the six student records held in
+its local MySQL. The lower query, run against the Amazon RDS endpoint, returns no tables at all,
+confirming the managed database was still empty at this point. The record identifiers run from 1 to 6
+with no 7, showing that the deletion demonstrated in Figure 19 removed the row from the database
+rather than only from the page.
+
 ---
 
 ## Note on the DB-SG screenshot
