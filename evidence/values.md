@@ -103,6 +103,14 @@ teammate wants their own copy.
 Unlike an instance public IP, the ALB DNS name is stable across lab sessions. It survives the stack
 being stopped and started, so this is the address to put in the report and use for the video.
 
+## Stage 14, Auto Scaling group
+
+| Item | Value |
+|---|---|
+| Auto Scaling group | `App-ASG`, desired/min/max 2/2/4, target tracking on average CPU at 50%, 300s warmup, scale-in enabled |
+| ASG instances | `i-00c957897434a961` (us-east-1a, asm-App-A) and `i-0af80d429a31ff2a2` (us-east-1b, asm-App-B), tag Name=App-Instance |
+| First healthy check | 3 Sep 2026, both targets Healthy on port 80 in App-TG shortly after creation |
+
 ## Stage 16, load test results
 
 | Run | Target rps | Achieved rps | Mean ms | p95 ms | Errors | Instances before | Instances after |
