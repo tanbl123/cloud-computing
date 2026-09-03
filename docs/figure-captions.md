@@ -110,6 +110,23 @@ proof of concept required by the project brief: the application and its database
 machine, before the tiers were separated. The connection is plain HTTP, which the assignment scope
 permits for a proof of concept.
 
+**Figure 16.** *(Evidence F-2, read)* The student records list served from `CapstonePOC`, showing six
+records retrieved from the MySQL database running on the same instance.
+
+**Figure 17.** *(Evidence F-2, create)* A new record for Chong Mei Ling submitted through the
+application form, and the list reloaded afterwards showing the record persisted with a city and state
+of Melaka.
+
+**Figure 18.** *(Evidence F-2, update)* The same record edited to change the city to Seremban and the
+state to Negeri Sembilan, with the list reloaded afterwards showing the amended values. Reloading
+confirms the change was written to the database rather than only reflected in the form.
+
+**Figure 19.** *(Evidence F-2, delete)* The confirmation prompt for removing Chong Mei Ling, and the
+list reloaded afterwards showing the record gone and the six original records intact.
+
+Together Figures 16 to 19 demonstrate all four record operations required by the functional criterion,
+each verified by reloading the page after the write rather than by the form's own response.
+
 ---
 
 ## Note on the DB-SG screenshot
