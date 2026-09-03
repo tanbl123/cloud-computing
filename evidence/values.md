@@ -123,7 +123,7 @@ being stopped and started, so this is the address to put in the report and use f
 | Run | Target rps | Achieved rps | Mean ms | p95 ms | Errors | Instances before | Instances after |
 |---|---|---|---|---|---|---|---|
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
-| Normal | 50 | | | | | | |
+| Normal | 50 | 50 | 15.9 | 40 | 0 | 2 | 2 |
 | Variable | 250 | | | | | | |
 | Peak | 1000 | | | | | | |
 
