@@ -127,7 +127,9 @@ being stopped and started, so this is the address to put in the report and use f
 | Variable | 250 | 250 | 577.7 | 2338 | 361 | 2 | 4 (scaled to max during/after this run: 2 healthy + 2 initializing when checked) |
 | Peak | 1000 | 985 | 4002.9 | 16497 | 89101 (50.4%, mostly connection-level failures, not HTTP errors) | 4 (already at max before this run started) | 4 (cannot scale further, ceiling reached) |
 
-Time from load starting to a new instance serving traffic: ______
+Time from load starting to a new instance serving traffic: ~5 minutes 5 seconds from the scaling
+alarm firing to InService (18:54:40Z to 18:59:45Z for the 2-to-3 step, 18:56:36Z to 19:01:41Z for the
+3-to-4 step), closely matching the configured 300-second instance warmup.
 
 ## Stage 17, cost
 
