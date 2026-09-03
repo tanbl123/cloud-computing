@@ -77,6 +77,13 @@ teammate wants their own copy.
 | App-Server placement | `asm-Public-A` (subnet-0cb19ed319b5dfa45), Build-SG, launched 3 Sep 2026 |
 | AMI ID (stage 11) | `ami-0d28ed0cb650c6cf4` (App-Server-AMI-v1, Available 3 Sep 2026 15:59 GMT+8, source AMI `ami-0f8a61b66d1accaee`) |
 
+## Stage 12, launch template
+
+| Item | Value |
+|---|---|
+| Launch template | `App-LT-v1` = `lt-06c91acc74c3b008f`, version 1 default, created 3 Sep 2026 |
+| Contents | AMI `ami-0d28ed0cb650c6cf4`, t3.micro, vockey, App-SG `sg-078027c0af8c5cc2e`, LabInstanceProfile, metadata V1 and V2 optional, no subnet, no user data |
+
 ## Stage 13, the submitted URL
 
 | Item | Value |

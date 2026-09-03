@@ -201,6 +201,19 @@ Stage 14 is created from this image, which is what allows capacity to be added o
 manual configuration. The Source AMI ID shown, `ami-0f8a61b66d1accaee`, records that the image derives
 from Ubuntu Server 24.04 LTS.
 
+## Stage 12 - The launch template
+
+**Figure 29.** *(Evidence SC-1, C3)* The `App-LT-v1` launch template, `lt-06c91acc74c3b008f`, specifying
+the verified machine image, the `t3.micro` instance type and the `App-SG` security group. The
+Availability Zone field is empty by design: because no zone or subnet is pinned in the template, the
+Auto Scaling group is free to distribute instances across both availability zones, which is what makes
+the deployment tolerant of the loss of either one.
+
+**Figure 30.** *(Evidence SEC-2, C3)* The advanced details of the same launch template, showing the
+`LabInstanceProfile` IAM instance profile that every launched instance receives. No user data is
+specified, since the application and its start-up entry are already contained in the machine image, and
+no credentials appear anywhere in the template.
+
 ---
 
 ## Note on the DB-SG screenshot
