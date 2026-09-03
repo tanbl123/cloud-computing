@@ -67,8 +67,9 @@ teammate wants their own copy.
 
 | Item | Value |
 |---|---|
-| CapstonePOC public IP | |
-| CapstonePOC **private** IP (needed for the migration) | |
+| CapstonePOC public IP | 52.206.157.249 |
+| CapstonePOC **private** IP (needed for the migration) | **10.0.0.184** |
+| CapstonePOC instance ID | `i-06968508821a04f04` (no IAM role, IMDSv2 optional, Ubuntu 24.04 LTS) |
 | Records added before migrating | how many: |
 | App-Server public IP | |
 | AMI ID | ami- |
