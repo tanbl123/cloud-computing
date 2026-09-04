@@ -124,7 +124,7 @@ being stopped and started, so this is the address to put in the report and use f
 |---|---|---|---|---|---|---|---|
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
 | Normal | 50 | 50 | 42.9 | 187 | 0 | 2 | 2 |
-| Variable | 250 | 242 | 3957.9 | 19585 | 6377 (14.6%) | 2 | see below (redo run, notably worse than the first attempt: 577.7ms/0.8% errors) |
+| Variable | 250 | 247 | 5253.2 | 13092 | 14938 (33.6%) | 2 | see below (3rd attempt; degradation trend across all 3 attempts: 577.7ms/0.8% -> 3957.9ms/14.6% -> 5253.2ms/33.6%) |
 | Peak | 1000 | 910 | 16140 | 30009 | 101074 (61.7%, mostly connection-level failures, not HTTP errors) | see note | 4 (ceiling reached, redo run notably worse than the first attempt: 4002.9ms mean / 50.4% errors) |
 
 CloudWatch peaks for the redo run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first attempt),

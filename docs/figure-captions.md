@@ -297,14 +297,16 @@ against `/students`, completing all 6,000 requests with zero errors and a mean l
 system absorbed this load without any visible strain.
 
 **Figure 43.** *(Evidence HP-1)* The variable-load run: 250 requests per second sustained for 180
-seconds. On this run, mean latency rose to 3,957.9 ms with a p95 of 19,585 ms, and 6,377 of 43,622
-completed requests failed (14.6%). This is markedly worse than an earlier attempt at the same target
-parameters, which produced a mean latency of 577.7 ms and a 0.8% error rate, illustrating that cloud load
-test results are not perfectly repeatable even with identical settings; the difference likely reflects how
-quickly the Auto Scaling group's CPU-triggered scale-out kept pace with demand on each occasion, among
-other transient conditions. The tool needed 2,785 concurrent clients to sustain 242 effective requests per
-second here, far more than the 24 needed for the light-load run, reflecting how much slower each
-individual response had become.
+seconds, run three times at identical settings over the course of this build. Rather than random
+variance, the three attempts show a clear monotonic degradation: mean latency rose from 577.7 ms (0.8%
+errors) on the first attempt, to 3,957.9 ms (14.6% errors) on the second, to 5,253.2 ms (33.6% errors,
+44,408 completed requests, 14,938 failed) on this third attempt shown here. Because each attempt used
+identical target parameters, this pattern points to something accumulating across the session rather than
+independent chance each time, most plausibly lingering database connections from earlier runs not being
+fully released, or the cumulative effect of instance churn (Figure 49) building up over repeated tests.
+The tool needed progressively more concurrent clients to sustain the target rate across the three
+attempts (17, then 2,785, then 2,514), reflecting how much slower each individual response had become as
+degradation accumulated.
 
 **Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds.
 On this run, mean latency reached 16,140 ms and 101,074 of 163,777 completed requests failed (61.7%), the
