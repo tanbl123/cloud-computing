@@ -432,6 +432,12 @@ arrived in Spam rather than the Inbox, a small but genuine operational detail wo
 — a real deployment would need a documented step telling recipients to check there, or a verified sending
 domain to avoid it.
 
+**Figure 56.** *(Evidence additional feature 1: scaling notifications)* `App-ASG`'s Activity
+notifications configuration, sending to `asm-scaling-notifications` on Launch, Terminate, Fail to launch,
+Fail to terminate, Replace root volume, and Fail to replace root volume — all six event types the console
+offers, not just scale-up, so the feature also captures the scale-in side already documented as unusually
+slow in stage 16.
+
 ---
 
 ## Note on the DB-SG screenshot
