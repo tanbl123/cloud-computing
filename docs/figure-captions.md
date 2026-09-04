@@ -313,20 +313,26 @@ percentiles all cluster around 30 seconds, the tool's own request timeout, indic
 requests were hanging rather than being refused outright. This is markedly worse than an earlier attempt
 at the same target parameters (4,002.9 ms mean, 50.4% errors), consistent with the same degradation seen
 in the repeated variable-load run (Figure 43) and pointing to genuine run-to-run variability under extreme
-load rather than a fixed, precisely repeatable ceiling. Read together with Figure 46, where CPU utilization
-reaches 96.68% under this load, the evidence points to the application tier and the single-instance
-database both approaching their limits together: the Auto Scaling group had no further capacity to add
-once at its maximum of four instances, and a database with a fixed, small connection ceiling cannot be
-relieved by adding more application servers in front of it. This is the architecture's genuine capacity
-limit, not a misconfiguration.
+load rather than a fixed, precisely repeatable ceiling. A likely contributor is visible in the Activity
+history: this run saw at least three separate rounds of ELB health-check failure and replacement, one
+instance slot being replaced twice within about ten minutes, versus two replacements in the first attempt.
+More instances dropping out and being replaced mid-test meant effective capacity was below the nominal
+four for stretches of the run, compounding the overload. Read together with Figure 46, where CPU
+utilization reaches 98.34% under this load, the evidence points to the application tier and the
+single-instance database both approaching their limits together: the Auto Scaling group had no further
+capacity to add once at its maximum of four instances, and a database with a fixed, small connection
+ceiling cannot be relieved by adding more application servers in front of it. This is the architecture's
+genuine capacity limit, not a misconfiguration.
 
 **Figure 45.** *(Evidence HP-2)* The Application Load Balancer's Target Response Time and Request Count
-over the test window, showing the response time climbing to a peak of 5.4 seconds and request volume
-rising to nearly 50,000, tracking the three load tiers in sequence.
+over the test window, showing the response time climbing to a peak of 13.7 seconds and request volume
+reaching 35,860, tracking the three load tiers in sequence. Both the higher peak latency and the lower
+total request count compared with an earlier attempt at the same test (5.4 seconds, nearly 50,000
+requests) are consistent with the additional instance churn described under Figure 44.
 
 **Figure 46.** *(Evidence HP-2)* CPU Utilization for `App-ASG` over the same window, climbing from a
-resting 0.2% to a peak of 96.68% during the peak-load run. This confirms the application tier itself was
-genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
+resting baseline to a peak of 98.34% during the peak-load run. This confirms the application tier itself
+was genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
 
 **Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets shortly after the
 peak-load run ended. Two instances present since before testing, `i-0616dfb6b419bf5ba` and

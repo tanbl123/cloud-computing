@@ -127,6 +127,12 @@ being stopped and started, so this is the address to put in the report and use f
 | Variable | 250 | 242 | 3957.9 | 19585 | 6377 (14.6%) | 2 | see below (redo run, notably worse than the first attempt: 577.7ms/0.8% errors) |
 | Peak | 1000 | 910 | 16140 | 30009 | 101074 (61.7%, mostly connection-level failures, not HTTP errors) | see note | 4 (ceiling reached, redo run notably worse than the first attempt: 4002.9ms mean / 50.4% errors) |
 
+CloudWatch peaks for the redo run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first attempt),
+35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt). Activity history
+shows at least three separate ELB health-check failures and replacements during this run (vs two the
+first time), which is a plausible cause of the worse numbers: more instances dropping out and being
+replaced mid-test meant effective capacity was below the nominal 4 for stretches of the run.
+
 Time from load starting to a new instance serving traffic: ~5 minutes 5 seconds from the scaling
 
 Scale-in: the target-tracking policy did not trigger automatic scale-in after over 35 minutes of CPU at
