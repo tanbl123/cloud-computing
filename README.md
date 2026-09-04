@@ -14,6 +14,7 @@ split 70 group marks across criteria C1 to C7 and 30 individual marks per studen
 | [`docs/build-log.html`](docs/build-log.html) | Group build log: agreed values, stage progress, decision log, issue log, evidence tracker. | Before you build, and after each stage. |
 | [`docs/report-draft.md`](docs/report-draft.md) | Report content draft, sections 3 to 10, in markdown. | When writing the report. |
 | `docs/BMIT3273-Report-Content-Draft.docx` | The same draft as a Word file with placeholders highlighted. | When writing the report. |
+| [`docs/stage-17-continuation-guide.md`](docs/stage-17-continuation-guide.md) | Updated stage 17 steps: the correct Build-SG deletion order, a stray-instance check the original runbook misses, and the Pricing Calculator steps. | Picking up stage 17 in your own account. |
 
 The 17-stage build runbook itself lives outside this repo, alongside the assignment brief and the
 lecture decks in the shared Google Drive folder.
@@ -62,7 +63,12 @@ minutes. Do not delete anything the day before the demonstration.
 
 ## Status
 
-Reports and planning documents are drafted. The AWS build has not started.
+One account has completed all 17 stages, including load testing (stage 16, run three times — see
+the build log) and security lock-down (stage 17). Its Pricing Calculator estimate (CO-1, CO-2) is
+still outstanding. See `docs/stage-17-continuation-guide.md` for the other two accounts picking up
+stage 17. Three additional features (worth 5 marks) are being added on top of the finished build:
+a middle-tier EC2 between the app and database, cross-region database migration, and Auto Scaling
+notifications via SNS.
 
 Everything in `docs/` that is written by Claude carries bracketed or highlighted placeholders where
 a real value from the lab account is required. Do not submit anything with those still in place,
