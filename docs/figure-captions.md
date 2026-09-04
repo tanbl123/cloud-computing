@@ -454,6 +454,14 @@ both directions of scaling, not just scale-up — deliberately included given st
 automatic scale-in is unusually slow, so being notified of terminate events (however triggered) has real
 operational value here.
 
+**Figure 59.** *(Evidence additional feature 2: cross-region DB migration)* The `asm-db-backups-401858547100`
+S3 bucket created for stage 19, with Bucket Versioning **Enabled** and default encryption. This bucket
+will hold a `mysqldump` export of `asm-rds`, re-uploaded under the same object key on each backup run so
+that Versioning preserves prior copies rather than silently overwriting them, paired with a lifecycle rule
+(added once the backup file exists) to age out old versions automatically. This is the S3 side of the
+feature; the RDS side — a manual snapshot copied to another region and restored — is documented in the
+figures that follow.
+
 ---
 
 ## Note on the DB-SG screenshot

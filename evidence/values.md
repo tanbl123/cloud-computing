@@ -224,6 +224,13 @@ than a one-off anomaly or a timing issue on our part.
 | Real Launch notification received | 2026-09-04T23:14:47Z, `Event: autoscaling:EC2_INSTANCE_LAUNCH`, instance `i-0e38baf76d4eb9e29` (us-east-1b, subnet-0fb96b33f55918639). Cause: manual desired-capacity change from 2 to 3 at 23:14:36Z. |
 | Real Terminate notification received | 2026-09-04T23:22:36Z, `Event: autoscaling:EC2_INSTANCE_TERMINATE`, instance `i-0b4461f79eba3eade` (us-east-1b, subnet-0fb96b33f55918639 — same AZ/subnet as the Launch event's instance). Cause: manual desired-capacity change from 3 to 2 at 23:16:51Z. |
 
+## Stage 19, cross-region DB migration
+
+| Item | Value |
+|---|---|
+| RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, taken 5 Sep 2026 |
+| S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
+
 ## Stage 21, cost
 
 | Item | Value |
