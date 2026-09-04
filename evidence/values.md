@@ -210,6 +210,8 @@ than a one-off anomaly or a timing issue on our part.
 | Item | Value |
 |---|---|
 | DB-SG Build-SG rule removed | `sgr-089ed02279591287e` (TCP 3306 from `sg-05d99a3d8e3b95da7`) deleted; DB-SG now has 2 inbound rules: Cloud9 SG and App-SG (Figure 52, "after" counterpart to Figure 8's "before") |
+| CapstonePOC terminated | `i-06968508821a04f04` terminated at stage 17 (see issue I-09 — should have happened at stage 10) |
+| Build-SG deleted | `sg-05d99a3d8e3b95da7` deleted successfully once CapstonePOC was terminated; Security Groups list down to 6 (App-SG, DB-SG, ALB-SG, Cloud9 SG, 2 unused defaults) |
 
 ## Stage 17, cost
 
