@@ -438,6 +438,14 @@ Fail to terminate, Replace root volume, and Fail to replace root volume — all 
 offers, not just scale-up, so the feature also captures the scale-in side already documented as unusually
 slow in stage 16.
 
+**Figure 57.** *(Evidence additional feature 1: scaling notifications)* The real "Launch" notification
+email received after manually raising `App-ASG`'s desired capacity from 2 to 3: `Event:
+autoscaling:EC2_INSTANCE_LAUNCH`, instance `i-0e38baf76d4eb9e29` launched in us-east-1b, with the cause
+recorded verbatim as the manual constraint change. Distinct from the automatic `TEST_NOTIFICATION` AWS
+sends the moment a notification config is saved (Figure 56's companion evidence, not shown separately),
+this is a genuine scaling-event email, proving the feature actually fires on real Auto Scaling activity
+rather than only on the connectivity test.
+
 ---
 
 ## Note on the DB-SG screenshot

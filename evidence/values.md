@@ -220,7 +220,8 @@ than a one-off anomaly or a timing issue on our part.
 | SNS topic | `asm-scaling-notifications` = `arn:aws:sns:us-east-1:401858547100:asm-scaling-notifications`, Standard, no encryption, default access policy (topic owner only) |
 | Email subscription | `tanbl-pm24@student.tarc.edu.my`, confirmed; subscription ARN `...asm-scaling-notifications:b370e45c-8670-4caa-aa63-8fc30a7d83fa`. Confirmation email landed in Spam, not Inbox — worth a one-line note in the report. |
 | ASG notification config | `App-ASG` &rarr; Activity notifications: `asm-scaling-notifications` for Launch, Terminate, Fail to launch, Fail to terminate, Replace root volume, Fail to replace root volume (all six event types the console offers) |
-| Test notification received | 2026-09-04T22:44:09Z, `Event: autoscaling:TEST_NOTIFICATION`, sent automatically by AWS the moment the notification config was saved. Confirms the SNS wiring works, but is not itself a real scaling event — still need Launch/Terminate emails from an actual capacity change. |
+| Test notification received | 2026-09-04T22:44:09Z, `Event: autoscaling:TEST_NOTIFICATION`, sent automatically by AWS the moment the notification config was saved. Confirms the SNS wiring works, but is not itself a real scaling event. |
+| Real Launch notification received | 2026-09-04T23:14:47Z, `Event: autoscaling:EC2_INSTANCE_LAUNCH`, instance `i-0e38baf76d4eb9e29` (us-east-1b, subnet-0fb96b33f55918639). Cause: manual desired-capacity change from 2 to 3 at 23:14:36Z. |
 
 ## Stage 21, cost
 
