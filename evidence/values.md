@@ -150,10 +150,13 @@ Time from load starting to a new instance serving traffic:
   2-to-3, 18:56:36Z to 19:01:41Z for 3-to-4), closely matching the configured 300-second warmup.
 - Redo: ~5 minutes 7 seconds from alarm to InService, in a single 2-to-4 step (10:58:34Z onward).
 
-Scale-in: on the first attempt, the target-tracking policy did not trigger automatic scale-in after over
-35 minutes of CPU at baseline following the peak run. Desired capacity was manually reduced from 4 to 2
-at 2026-09-03T21:16:06Z to demonstrate the scale-in mechanism within the available session time; instances
-i-0a36b41e27175b3e9 and i-057f2818dadba42e6 were terminated and the group returned to 2/2 Healthy.
+Scale-in: on both the first attempt and the redo, the target-tracking policy did not trigger automatic
+scale-in within the available observation window despite CPU returning to baseline. Desired capacity was
+manually reduced from 4 to 2 each time to demonstrate the scale-in mechanism:
+- First attempt, 2026-09-03T21:16:06Z: terminated i-0a36b41e27175b3e9 and i-057f2818dadba42e6.
+- Redo, 2026-09-04T12:28:46Z: terminated i-013d6789292b02d52 and i-0bd60a44d0f58b7b4.
+Needing the same manual intervention on both runs supports treating the scale-in delay as a genuine,
+repeatable characteristic of this policy configuration rather than a one-off anomaly.
 
 ## Stage 17, cost
 
