@@ -306,15 +306,19 @@ other transient conditions. The tool needed 2,785 concurrent clients to sustain 
 second here, far more than the 24 needed for the light-load run, reflecting how much slower each
 individual response had become.
 
-**Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds,
-run against an Auto Scaling group already at its maximum of four instances. Mean latency reached 4,002.9
-ms, p95 reached 16,497 ms, and 89,101 of 177,318 completed requests failed (50.4%), the great majority as
-connection-level failures rather than HTTP error responses. Read together with Figure 46, where CPU
-utilization reaches 96.68% at this same point, the evidence points to the application tier and the
-single-instance database both approaching their limits together: the Auto Scaling group had no further
-capacity to add, and a database with a fixed, small connection ceiling cannot be relieved by adding more
-application servers in front of it. This is the architecture's genuine capacity limit, not a
-misconfiguration.
+**Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds.
+On this run, mean latency reached 16,140 ms and 101,074 of 163,777 completed requests failed (61.7%), the
+great majority as connection-level failures rather than HTTP error responses; the 90th, 95th and 99th
+percentiles all cluster around 30 seconds, the tool's own request timeout, indicating that most failed
+requests were hanging rather than being refused outright. This is markedly worse than an earlier attempt
+at the same target parameters (4,002.9 ms mean, 50.4% errors), consistent with the same degradation seen
+in the repeated variable-load run (Figure 43) and pointing to genuine run-to-run variability under extreme
+load rather than a fixed, precisely repeatable ceiling. Read together with Figure 46, where CPU utilization
+reaches 96.68% under this load, the evidence points to the application tier and the single-instance
+database both approaching their limits together: the Auto Scaling group had no further capacity to add
+once at its maximum of four instances, and a database with a fixed, small connection ceiling cannot be
+relieved by adding more application servers in front of it. This is the architecture's genuine capacity
+limit, not a misconfiguration.
 
 **Figure 45.** *(Evidence HP-2)* The Application Load Balancer's Target Response Time and Request Count
 over the test window, showing the response time climbing to a peak of 5.4 seconds and request volume
