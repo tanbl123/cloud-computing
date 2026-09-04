@@ -425,6 +425,13 @@ native lifecycle notifications (Launch, Launch error, Terminate, Terminate error
 the Auto Scaling group rather than through a separate Lambda or EventBridge rule, so the feature builds on
 services already in the architecture rather than introducing new ones.
 
+**Figure 55.** *(Evidence additional feature 1: scaling notifications)* The confirmed email
+subscription to `asm-scaling-notifications`: the subscription confirmation page after clicking the link
+in AWS's confirmation email, and the "Subscription confirmed" result. The confirmation email itself
+arrived in Spam rather than the Inbox, a small but genuine operational detail worth noting in the report
+— a real deployment would need a documented step telling recipients to check there, or a verified sending
+domain to avoid it.
+
 ---
 
 ## Note on the DB-SG screenshot
