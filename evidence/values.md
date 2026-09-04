@@ -135,8 +135,18 @@ Total time 180.002s, Mean latency 4,364.7ms, Effective rps 983, p50 1,257ms, p90
 p99 30,001ms, longest request 50,288ms, concurrent clients 6,740. Notably better than the second attempt
 on both mean latency and error rate, breaking the monotonic-degradation pattern seen in the variable-load
 tier (Figure 43) — reported as genuine non-monotonic variability rather than forced into that same trend.
-CloudWatch graphs, target group state, and Activity history for this third attempt are still to be
-captured.
+Third peak attempt CloudWatch/target-group monitoring (captured, ASG Activity history still pending —
+waiting for the group to settle at 4/4 before capturing it): ALB Target Response Time peaked at 6.7 sec,
+Requests reached 54.77K over the window — both closer to the first attempt's figures (5.4 sec, ~50K
+requests) than the second attempt's (13.7 sec, 35.86K). ASG CPUUtilization peaked at only 69.34%, well
+below both prior attempts (98.34%, 96.68%), and the `TargetTracking-App-ASG-AlarmHigh` alarm went into
+alarm twice in this window rather than once continuously. App-TG's own Healthy/Unhealthy Hosts graphs show
+two distinct dips to 0 healthy / spikes to 4 unhealthy during the test window, a more visible (if shorter)
+churn shape than either prior attempt showed on this metric. Target group now shows a settled 4/4 Healthy:
+`i-0034f6fa78d34f86d`, `i-01fa14ac517773e7`, `i-09e3be279800b3f33`, `i-0b90bd09ef2406b0d`. Taken together —
+lower peak CPU, lower peak latency, but two distinct healthy-host dips — this third attempt's better
+overall result did not come from an absence of churn, but from shorter/less-overlapping periods of it than
+the second attempt experienced.
 
 Activity history, redo run (full sequence, App-ASG settled at 4/4 Healthy afterwards):
 - Before any load: i-0c29df91de914926d replaced by i-052957d0b5b7a7829 after an EC2 health check found it
