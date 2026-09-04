@@ -209,7 +209,7 @@ than a one-off anomaly or a timing issue on our part.
 
 | Item | Value |
 |---|---|
-| DB-SG Build-SG rule removed | `sgr-089ed02279591287e` (TCP 3306 from `sg-05d99a3d8e3b95da7`) deleted; DB-SG now has 2 inbound rules: Cloud9 SG and App-SG |
+| DB-SG Build-SG rule removed | `sgr-089ed02279591287e` (TCP 3306 from `sg-05d99a3d8e3b95da7`) deleted; DB-SG now has 2 inbound rules: Cloud9 SG and App-SG (Figure 52, "after" counterpart to Figure 8's "before") |
 
 ## Stage 17, cost
 
