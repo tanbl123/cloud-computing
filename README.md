@@ -66,9 +66,10 @@ minutes. Do not delete anything the day before the demonstration.
 One account has completed all 17 stages, including load testing (stage 16, run three times — see
 the build log) and security lock-down (stage 17). See `docs/stage-17-continuation-guide.md` for the
 other two accounts picking up stage 17. That account is now building all three additional features required of the group (worth 5 marks) as
-stages 18 to 20 — SNS scaling notifications, then a middle-tier EC2 between the app and database,
-then cross-region database migration — followed by the Pricing Calculator estimate (CO-1, CO-2) as
-stage 21, done last so it prices in what the additional features add.
+stages 18 to 20 — SNS scaling notifications, then cross-region database migration, then a
+middle-tier EC2 between the app and database (done last since it's the riskiest, changing the live
+traffic path) — followed by the Pricing Calculator estimate (CO-1, CO-2) as stage 21, done last so
+it prices in what the additional features add.
 
 Everything in `docs/` that is written by Claude carries bracketed or highlighted placeholders where
 a real value from the lab account is required. Do not submit anything with those still in place,
