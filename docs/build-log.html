@@ -76,7 +76,10 @@
 <p>Because phase 3 never reads database settings from environment variables, its <code>rc.local</code> re-exporting only <code>APP_PORT</code> is sufficient for reboot survival. Still test a reboot before imaging at stage 11.</p>
 
 <h2>3. Stage progress</h2>
-<p>Stages are the runbook's. Put your initials and the date when you complete one.</p>
+<p>Stages are the runbook's. Put your initials and the date when you complete one. Stages 18 to 21 are
+not part of the shared runbook: one member is building all three additional features (worth 5 marks,
+3 required for the group) in their own account, then doing the Pricing Calculator last so it prices
+in what those features add. Only fill these in for that account.</p>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Stage</th><th>[Member 1]</th><th>[Member 2]</th><th>[Member 3]</th><th>Notes</th></tr>
 <tr><td>01 Lab start, pin region</td><td>1 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -95,7 +98,11 @@
 <tr><td>14 Auto Scaling group</td><td>3 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. <code>App-ASG</code> created attached to App-TG, both instances (<code>i-00c957897434a961</code> in asm-App-A, <code>i-0af80d429a31ff2a2</code> in asm-App-B) reported Healthy quickly. ALB DNS confirmed serving all seven records. Figures 35 to 38 captured. Target tracking policy confirmed enabled with scale-in active (the "Scale in: Disabled" field reports the disable-scale-in override is off, not that scaling in itself is off). Next: terminate App-Server now that the ASG is proven working. Evidence LB-2, SC-1</td></tr>
 <tr><td>15 Flow logs</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. Rebuilt on S3 after the CloudWatch/LabRole failure (issue I-07). 55 objects delivered to <code>asm-flowlogs-401858547100</code> within the expected window. Figures 39 and 40 captured: config, and decompressed records showing an ACCEPT pair between the ALB node (10.0.0.146) and an ASG instance (10.0.3.14) on port 80, plus REJECT entries against Cloud9's interface from unsolicited internet scanning. Evidence SEC-1</td></tr>
 <tr><td>16 Load test</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. All three tiers, baseline, CPU/latency graphs, and self-healing all captured (Figures 41 to 49). Target-tracking scale-in did not trigger automatically after 35+ minutes of CPU at baseline, so desired capacity was manually reduced from 4 to 2 to demonstrate the mechanism honestly (Figure 50, cause recorded as a user request, not an alarm). App-Server terminated 4 Sep 2026, closing out the last loose end from stage 14. Evidence HP-1, HP-2, SC-2.</td></tr>
-<tr><td>17 Lock down and cost</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Security hardening done: DB-SG's Build-SG rule removed (Figure 52, after Figure 8's before), then Build-SG deleted. CapstonePOC (never terminated since stage 08, see I-09) terminated first to unblock the deletion. AWS Pricing Calculator estimate (CO-1, CO-2) still to do.</td></tr>
+<tr><td>17 Lock down</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Security hardening done: DB-SG's Build-SG rule removed (Figure 52, after Figure 8's before), then Build-SG deleted. CapstonePOC (never terminated since stage 08, see I-09) terminated first to unblock the deletion. The Pricing Calculator part of this stage moved to 21, done after the additional features so it prices in whatever they add.</td></tr>
+<tr><td>18 SNS scaling notifications</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Additional feature 1 of 3. Auto Scaling's native notification feature (not Lambda/EventBridge, to stay within services already in use): App-ASG &rarr; Notifications &rarr; new SNS topic &rarr; subscribe email &rarr; confirm &rarr; select Launch, Launch error, Terminate, Terminate error. Both directions, not just scale-up, so it ties to the scale-in delay already documented in I-0x.</td></tr>
+<tr><td>19 Middle-tier EC2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Additional feature 2 of 3, highest risk since it changes the live traffic path. New Data-SG between App-SG and DB-SG: App instances talk to a new data-access instance, which alone is allowed into DB-SG on 3306. Do this while there is still time to debug before the deadline, not last.</td></tr>
+<tr><td>20 Cross-region DB migration</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Additional feature 3 of 3. Manual RDS snapshot &rarr; copy to us-east-2 (Ohio) &rarr; restore a new instance there &rarr; verify the data &rarr; tear the Ohio instance down once evidence is captured, to avoid ongoing second-region RDS cost.</td></tr>
+<tr><td>21 Pricing Calculator (CO-1, CO-2)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Moved from stage 17. 12-month, us-east-1 estimate covering the base architecture plus whichever of stages 18 to 20 this account built, exported as a file as well as screenshotted.</td></tr>
 </table>
 
 <h2>4. Decision log</h2>
@@ -148,8 +155,8 @@
 <tr><td>HA-2</td><td>RDS backup and recovery settings</td><td>06</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>SEC-1</td><td>Security group rules for all three tiers</td><td>04, 15</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>SEC-2</td><td>Mydbsecret created and used by the app</td><td>07, 10</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-1</td><td>12-month Pricing Calculator export</td><td>17</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-2</td><td>Sizing rationale</td><td>17</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-1</td><td>12-month Pricing Calculator export</td><td>21</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-2</td><td>Sizing rationale</td><td>21</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>HP-1</td><td>Load test method, tool, duration</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>HP-2</td><td>Latency, throughput, errors, scaling</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>DEMO-1</td><td>Who built what, and who demos what</td><td>&mdash;</td><td>[  ]</td><td>[  ]</td></tr>
