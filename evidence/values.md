@@ -222,6 +222,7 @@ than a one-off anomaly or a timing issue on our part.
 | ASG notification config | `App-ASG` &rarr; Activity notifications: `asm-scaling-notifications` for Launch, Terminate, Fail to launch, Fail to terminate, Replace root volume, Fail to replace root volume (all six event types the console offers) |
 | Test notification received | 2026-09-04T22:44:09Z, `Event: autoscaling:TEST_NOTIFICATION`, sent automatically by AWS the moment the notification config was saved. Confirms the SNS wiring works, but is not itself a real scaling event. |
 | Real Launch notification received | 2026-09-04T23:14:47Z, `Event: autoscaling:EC2_INSTANCE_LAUNCH`, instance `i-0e38baf76d4eb9e29` (us-east-1b, subnet-0fb96b33f55918639). Cause: manual desired-capacity change from 2 to 3 at 23:14:36Z. |
+| Real Terminate notification received | 2026-09-04T23:22:36Z, `Event: autoscaling:EC2_INSTANCE_TERMINATE`, instance `i-0b4461f79eba3eade` (us-east-1b, subnet-0fb96b33f55918639 — same AZ/subnet as the Launch event's instance). Cause: manual desired-capacity change from 3 to 2 at 23:16:51Z. |
 
 ## Stage 21, cost
 

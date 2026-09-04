@@ -446,6 +446,14 @@ sends the moment a notification config is saved (Figure 56's companion evidence,
 this is a genuine scaling-event email, proving the feature actually fires on real Auto Scaling activity
 rather than only on the connectivity test.
 
+**Figure 58.** *(Evidence additional feature 1: scaling notifications)* The matching "Terminate"
+notification email received after manually lowering desired capacity back from 3 to 2: `Event:
+autoscaling:EC2_INSTANCE_TERMINATE`, instance `i-0b4461f79eba3eade` terminated in us-east-1b, cause
+recorded as the manual constraint change. Together with Figure 57, this demonstrates the feature covers
+both directions of scaling, not just scale-up — deliberately included given stage 16's finding that
+automatic scale-in is unusually slow, so being notified of terminate events (however triggered) has real
+operational value here.
+
 ---
 
 ## Note on the DB-SG screenshot
