@@ -374,6 +374,14 @@ entry records the cause honestly as a user-requested constraint update rather th
 while still exercising the identical termination mechanism an automatic scale-in would use: instances
 selected for termination, taken out of service, and deregistered from the target group.
 
+**Figure 51.** *(Evidence HP-2, C3)* The `TargetTracking-App-ASG-AlarmHigh` CloudWatch alarm that
+drives the scaling policy, showing its exact rule: CPUUtilization greater than 50 for 3 datapoints within
+3 minutes. The state timeline at the bottom shows the alarm transitioning from OK to In alarm as CPU
+crossed the threshold during the peak-load run, then back to OK as load subsided, with a peak reading of
+98.34%. This is the underlying mechanism behind the scale-out shown in Figures 43, 44 and 49: not a
+continuous controller, but a discrete alarm that fires once its condition is met for the required number
+of consecutive data points.
+
 ---
 
 ## Note on the DB-SG screenshot
