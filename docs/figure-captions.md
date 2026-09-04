@@ -293,7 +293,7 @@ connections, so its reported latencies are not directly comparable to this cold-
 the 359.87 ms waiting time is the fair point of reference.
 
 **Figure 42.** *(Evidence HP-1)* The normal-load run: 50 requests per second sustained for 120 seconds
-against `/students`, completing all 6,000 requests with zero errors and a mean latency of 16.9 ms. The
+against `/students`, completing all 6,000 requests with zero errors and a mean latency of 42.9 ms. The
 system absorbed this load without any visible strain.
 
 **Figure 43.** *(Evidence HP-1)* The variable-load run: 250 requests per second sustained for 180

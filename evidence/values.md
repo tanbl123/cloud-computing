@@ -123,7 +123,7 @@ being stopped and started, so this is the address to put in the report and use f
 | Run | Target rps | Achieved rps | Mean ms | p95 ms | Errors | Instances before | Instances after |
 |---|---|---|---|---|---|---|---|
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
-| Normal | 50 | 50 | 16.9 | 46 | 0 | 2 | 2 |
+| Normal | 50 | 50 | 42.9 | 187 | 0 | 2 | 2 |
 | Variable | 250 | 242 | 3957.9 | 19585 | 6377 (14.6%) | 2 | see below (redo run, notably worse than the first attempt: 577.7ms/0.8% errors) |
 | Peak | 1000 | 910 | 16140 | 30009 | 101074 (61.7%, mostly connection-level failures, not HTTP errors) | see note | 4 (ceiling reached, redo run notably worse than the first attempt: 4002.9ms mean / 50.4% errors) |
 
