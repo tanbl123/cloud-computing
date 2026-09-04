@@ -412,6 +412,13 @@ references, an ordering bug in the runbook's own Harden section logged as issue 
 this is the architecture's final, least-privilege security posture: no group or instance depends on the
 temporary build-time access that Figures 8 and 9 documented.
 
+**Figure 53.** *(Evidence SEC-1)* The Security Groups list at the end of the build, down to six groups
+from the original seven: `App-SG`, `DB-SG`, `ALB-SG`, the Cloud9 environment's own group, and the two
+unused default VPC groups. `Build-SG` no longer appears, confirming its deletion succeeded once its
+last dependent (the `DB-SG` rule in Figure 52) and its last attached instance (`CapstonePOC`, terminated
+per issue I-09) were both removed. This is the clearest single exhibit that the temporary build-time
+access path has been fully retired, not merely disabled.
+
 ---
 
 ## Note on the DB-SG screenshot
