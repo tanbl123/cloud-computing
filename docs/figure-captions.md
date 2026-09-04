@@ -334,17 +334,13 @@ requests) are consistent with the additional instance churn described under Figu
 resting baseline to a peak of 98.34% during the peak-load run. This confirms the application tier itself
 was genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
 
-**Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets shortly after the
-peak-load run ended. Two instances present since before testing, `i-0616dfb6b419bf5ba` and
-`i-0e639be3baa568e2b`, are Draining as the Auto Scaling group begins scaling back in. Two instances that
-launched during the variable-load run, `i-0a36b41e27175b3e9` and `i-011671499ab7bcf5`, are Healthy. Two
-further instances, `i-057f2818dadba42e6` and `i-0abcee58aee559299`, are new IDs not seen at any earlier
-stage; the latter is Unhealthy with reason "Request timed out". These are replacement instances: under
-the CPU saturation shown in Figure 46, at least one running instance failed its health check on the
-lightweight `/` path, and the Auto Scaling group terminated and replaced it automatically. This
-demonstrates a second, independent recovery mechanism operating alongside target-tracking scaling: the
-group not only adds capacity in response to demand, it also detects and replaces instances that fail
-outright under load.
+**Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets once the group settled
+after the repeated load test: all four instances, `i-0db87ff77fa55a1c8`, `i-0bd60a44d0f58b7b4`,
+`i-013d6789292b02d52` and `i-03f35cdd89c04a531`, Healthy. These are exactly the survivors of the churn
+described in Figure 49: two are the clean scale-out instances from target tracking, and two are the final
+replacements from instance slots that each failed an ELB health check and were automatically replaced,
+one of them twice. That the group closes out at a clean 4/4 Healthy despite that churn demonstrates the
+Auto Scaling group's self-healing recovering fully regardless of how many times a given slot failed.
 
 **Figure 48.** *(Evidence SC-2, C3)* Healthy and unhealthy host counts for `App-TG` over the test
 window, plotted directly from the target group's own metrics rather than a single snapshot. Healthy
