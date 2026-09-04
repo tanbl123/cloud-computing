@@ -345,9 +345,10 @@ Auto Scaling group's self-healing recovering fully regardless of how many times 
 **Figure 48.** *(Evidence SC-2, C3)* Healthy and unhealthy host counts for `App-TG` over the test
 window, plotted directly from the target group's own metrics rather than a single snapshot. Healthy
 hosts rise from 2 toward 4 as the variable-load run triggers scale-out, then a brief dip in healthy hosts
-coincides exactly with a spike to 3 unhealthy hosts around the peak-load run, corresponding to the
-health-check failures shown individually in Figure 47. Both metrics recover fully within minutes, healthy
-hosts returning to 4, confirming the group's self-healing completed cleanly without manual intervention.
+coincides exactly with a spike to unhealthy hosts around the peak-load run, corresponding to the
+health-check failures itemised individually in Figure 49. Both metrics recover fully within minutes,
+healthy hosts returning to 4, confirming the group's self-healing completed cleanly without manual
+intervention.
 
 **Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history for the repeated load test, showing a
 more extensive sequence than the first attempt. Before any load was applied, `i-0c29df91de914926d` was
