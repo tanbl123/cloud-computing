@@ -419,6 +419,12 @@ last dependent (the `DB-SG` rule in Figure 52) and its last attached instance (`
 per issue I-09) were both removed. This is the clearest single exhibit that the temporary build-time
 access path has been fully retired, not merely disabled.
 
+**Figure 54.** *(Evidence additional feature 1: scaling notifications)* The `asm-scaling-notifications`
+SNS topic created for stage 18, Standard type, with its ARN. This topic is the target for `App-ASG`'s
+native lifecycle notifications (Launch, Launch error, Terminate, Terminate error), configured directly on
+the Auto Scaling group rather than through a separate Lambda or EventBridge rule, so the feature builds on
+services already in the architecture rather than introducing new ones.
+
 ---
 
 ## Note on the DB-SG screenshot

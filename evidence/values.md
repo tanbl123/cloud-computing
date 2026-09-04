@@ -213,7 +213,14 @@ than a one-off anomaly or a timing issue on our part.
 | CapstonePOC terminated | `i-06968508821a04f04` terminated at stage 17 (see issue I-09 — should have happened at stage 10) |
 | Build-SG deleted | `sg-05d99a3d8e3b95da7` deleted successfully once CapstonePOC was terminated; Security Groups list down to 6 (App-SG, DB-SG, ALB-SG, Cloud9 SG, 2 unused defaults) |
 
-## Stage 17, cost
+## Stage 18, SNS scaling notifications
+
+| Item | Value |
+|---|---|
+| SNS topic | `asm-scaling-notifications` = `arn:aws:sns:us-east-1:401858547100:asm-scaling-notifications`, Standard, no encryption, default access policy (topic owner only) |
+| Email subscription | pending confirmation |
+
+## Stage 21, cost
 
 | Item | Value |
 |---|---|
