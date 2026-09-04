@@ -297,11 +297,14 @@ against `/students`, completing all 6,000 requests with zero errors and a mean l
 system absorbed this load without any visible strain.
 
 **Figure 43.** *(Evidence HP-1)* The variable-load run: 250 requests per second sustained for 180
-seconds. Mean latency rose to 577.7 ms, roughly 36 times the normal-run figure, with a p95 of 2,338 ms
-and 361 errors out of 44,949 completed requests (0.8%). The tool needed 644 concurrent clients to sustain
-the target rate, against 17 at the lighter tier, reflecting how much slower each individual response had
-become. This run crossed the Auto Scaling group's CPU threshold and triggered a scale-out to its
-configured maximum of four instances.
+seconds. On this run, mean latency rose to 3,957.9 ms with a p95 of 19,585 ms, and 6,377 of 43,622
+completed requests failed (14.6%). This is markedly worse than an earlier attempt at the same target
+parameters, which produced a mean latency of 577.7 ms and a 0.8% error rate, illustrating that cloud load
+test results are not perfectly repeatable even with identical settings; the difference likely reflects how
+quickly the Auto Scaling group's CPU-triggered scale-out kept pace with demand on each occasion, among
+other transient conditions. The tool needed 2,785 concurrent clients to sustain 242 effective requests per
+second here, far more than the 24 needed for the light-load run, reflecting how much slower each
+individual response had become.
 
 **Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds,
 run against an Auto Scaling group already at its maximum of four instances. Mean latency reached 4,002.9

@@ -124,7 +124,7 @@ being stopped and started, so this is the address to put in the report and use f
 |---|---|---|---|---|---|---|---|
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
 | Normal | 50 | 50 | 16.9 | 46 | 0 | 2 | 2 |
-| Variable | 250 | 250 | 577.7 | 2338 | 361 | 2 | 4 (scaled to max during/after this run: 2 healthy + 2 initializing when checked) |
+| Variable | 250 | 242 | 3957.9 | 19585 | 6377 (14.6%) | 2 | see below (redo run, notably worse than the first attempt: 577.7ms/0.8% errors) |
 | Peak | 1000 | 985 | 4002.9 | 16497 | 89101 (50.4%, mostly connection-level failures, not HTTP errors) | 4 (already at max before this run started) | 4 (cannot scale further, ceiling reached) |
 
 Time from load starting to a new instance serving traffic: ~5 minutes 5 seconds from the scaling
