@@ -59,10 +59,12 @@ group rather than an IP range, so only the load balancer can reach the applicati
 the rule names a group rather than an address, it remains correct as the Auto Scaling group changes
 size.
 
-**Figure 8.** *(Evidence SEC-1)* Inbound rules for `DB-SG`. Access to MySQL on port 3306 is
-restricted to three named security groups: the application tier, the temporary build group, and the
-Cloud9 administration host. No CIDR range appears as a source, so the database cannot be reached from
-the public internet.
+**Figure 8.** *(Evidence SEC-1)* Inbound rules for `DB-SG` in its final, stage-17 end state. Access to
+MySQL on port 3306 is restricted to two named security groups: the application tier and the Cloud9
+administration host. The temporary build group's rule, present during construction to support the
+migration, has been removed now that Build-SG itself is being deleted (see Figure 9). No CIDR range
+appears as a source at any point, so the database was never reachable from the public internet, and this
+final state removes the one access path that was only ever meant to be temporary.
 
 **Figure 9.** *(Evidence SEC-1)* Inbound rules for `Build-SG`, the temporary group used to reach
 instances directly during construction. Browser and SSH access were restricted to a single

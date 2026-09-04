@@ -205,6 +205,12 @@ Needing the same manual intervention on all three runs, the last time after CPU 
 confirms the scale-in delay as a genuine, repeatable characteristic of this policy configuration rather
 than a one-off anomaly or a timing issue on our part.
 
+## Stage 17, security group hardening
+
+| Item | Value |
+|---|---|
+| DB-SG Build-SG rule removed | `sgr-089ed02279591287e` (TCP 3306 from `sg-05d99a3d8e3b95da7`) deleted; DB-SG now has 2 inbound rules: Cloud9 SG and App-SG |
+
 ## Stage 17, cost
 
 | Item | Value |
