@@ -128,19 +128,32 @@ being stopped and started, so this is the address to put in the report and use f
 | Peak | 1000 | 910 | 16140 | 30009 | 101074 (61.7%, mostly connection-level failures, not HTTP errors) | see note | 4 (ceiling reached, redo run notably worse than the first attempt: 4002.9ms mean / 50.4% errors) |
 
 CloudWatch peaks for the redo run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first attempt),
-35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt). Activity history
-shows at least three separate ELB health-check failures and replacements during this run (vs two the
-first time), which is a plausible cause of the worse numbers: more instances dropping out and being
-replaced mid-test meant effective capacity was below the nominal 4 for stretches of the run.
+35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt).
 
-Time from load starting to a new instance serving traffic: ~5 minutes 5 seconds from the scaling
+Activity history, redo run (full sequence, App-ASG settled at 4/4 Healthy afterwards):
+- Before any load: i-0c29df91de914926d replaced by i-052957d0b5b7a7829 after an EC2 health check found it
+  "terminated or stopped" (the I-08 Learner Lab session-stop pattern, unrelated to load).
+- 06:49 PM: i-0c7479c687bb3569d failed an ELB health check, replaced by i-078fbba2b3c6488c9.
+- 06:53 PM: i-052957d0b5b7a7829 (the pre-test replacement) itself failed and was replaced by
+  i-03f35cdd89c04a531.
+- 07:01 PM: i-078fbba2b3c6488c9 failed a second time and was replaced by i-0db87ff77fa55a1c8.
+- Separately, target tracking grew desired capacity from 2 straight to 4 in one step (not 2-to-3-to-4 as
+  in the first attempt) via the TargetTracking-App-ASG-AlarmHigh alarm at 10:58:25Z, launching
+  i-013d6789292b02d52 and i-0bd60a44d0f58b7b4.
 
-Scale-in: the target-tracking policy did not trigger automatic scale-in after over 35 minutes of CPU at
-baseline following the peak run. Desired capacity was manually reduced from 4 to 2 at 2026-09-03T21:16:06Z
-to demonstrate the scale-in mechanism within the available session time; instances i-0a36b41e27175b3e9 and
-i-057f2818dadba42e6 were terminated and the group returned to 2/2 Healthy.
-alarm firing to InService (18:54:40Z to 18:59:45Z for the 2-to-3 step, 18:56:36Z to 19:01:41Z for the
-3-to-4 step), closely matching the configured 300-second instance warmup.
+Two of the four running instance slots failed and were replaced twice each during this run, versus at
+most once each in the first attempt — the most plausible explanation for why this run's latency and
+error rate came out substantially worse.
+
+Time from load starting to a new instance serving traffic:
+- First attempt: ~5 minutes 5 seconds from alarm to InService, in two steps (18:54:40Z to 18:59:45Z for
+  2-to-3, 18:56:36Z to 19:01:41Z for 3-to-4), closely matching the configured 300-second warmup.
+- Redo: ~5 minutes 7 seconds from alarm to InService, in a single 2-to-4 step (10:58:34Z onward).
+
+Scale-in: on the first attempt, the target-tracking policy did not trigger automatic scale-in after over
+35 minutes of CPU at baseline following the peak run. Desired capacity was manually reduced from 4 to 2
+at 2026-09-03T21:16:06Z to demonstrate the scale-in mechanism within the available session time; instances
+i-0a36b41e27175b3e9 and i-057f2818dadba42e6 were terminated and the group returned to 2/2 Healthy.
 
 ## Stage 17, cost
 

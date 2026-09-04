@@ -353,21 +353,20 @@ coincides exactly with a spike to 3 unhealthy hosts around the peak-load run, co
 health-check failures shown individually in Figure 47. Both metrics recover fully within minutes, healthy
 hosts returning to 4, confirming the group's self-healing completed cleanly without manual intervention.
 
-**Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history, spanning both the load test and
-an earlier, unrelated event. The `TargetTracking-App-ASG-AlarmHigh` alarm fired twice during the
-variable-load run, growing desired capacity from 2 to 3 at 18:54:25Z and from 3 to 4 at 18:56:25Z; each
-new instance took almost exactly 5 minutes 5 seconds to reach InService, closely matching the configured
-300-second warmup. During the peak-load run, two instances failed their ELB health check under the CPU
-saturation shown in Figure 46 and were automatically terminated and replaced. Separately, and hours
-before any load was applied, the two original instances from Stage 14 were replaced after an EC2 health
-check found them "terminated or stopped", almost certainly because the underlying instances were stopped
-by the Learner Lab platform during a session pause and resume (see issue I-08). Taken together, this
-single history demonstrates three distinct forms of resilience operating without manual intervention:
-scaling in response to demand, recovery from an application-level failure, and recovery from an
-infrastructure-level interruption outside the application's own control. No scale-in event appears in
-this history as of capture; CPU had been at baseline for over 25 minutes at this point, longer than the
-scale-out response took, which is itself worth noting as an asymmetry between how quickly the group adds
-capacity and how cautiously it removes it.
+**Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history for the repeated load test, showing a
+more extensive sequence than the first attempt. Before any load was applied, `i-0c29df91de914926d` was
+replaced by `i-052957d0b5b7a7829` after an EC2 health check found it "terminated or stopped", the same
+Learner Lab session-stop pattern documented in issue I-08. During the variable and peak runs, three
+further rounds of ELB health-check failure occurred: `i-0c7479c687bb3569d` was replaced by
+`i-078fbba2b3c6488c9` at 06:49 PM, the earlier replacement `i-052957d0b5b7a7829` itself failed and was
+replaced by `i-03f35cdd89c04a531` at 06:53 PM, and `i-078fbba2b3c6488c9` failed a second time and was
+replaced by `i-0db87ff77fa55a1c8` at 07:01 PM. Two of the four running instance slots therefore failed and
+were replaced twice each within this single test, distinct from the four instances present in the first
+attempt at this test, each of which failed at most once. This higher rate of instance failure is a
+plausible explanation for why this run's latency and error rate (Figure 44) were substantially worse than
+the first attempt's. Separately, and cleanly, target tracking grew desired capacity from 2 to 4 via the
+`TargetTracking-App-ASG-AlarmHigh` alarm, launching `i-013d6789292b02d52` and `i-0bd60a44d0f58b7b4`. The
+group ended this run settled at 4/4 Healthy with no pending activity.
 
 **Figure 50.** *(Evidence SC-2, C3)* `App-ASG` back at 2/2 Healthy after a manually triggered
 scale-in. The target-tracking policy did not trigger automatic scale-in within the available observation
