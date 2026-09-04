@@ -125,10 +125,18 @@ being stopped and started, so this is the address to put in the report and use f
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
 | Normal | 50 | 50 | 42.9 | 187 | 0 | 2 | 2 |
 | Variable | 250 | 247 | 5253.2 | 13092 | 14938 (33.6%) | 2 | see below (3rd attempt; degradation trend across all 3 attempts: 577.7ms/0.8% -> 3957.9ms/14.6% -> 5253.2ms/33.6%) |
-| Peak | 1000 | 910 | 16140 | 30009 | 101074 (61.7%, mostly connection-level failures, not HTTP errors) | see note | 4 (ceiling reached, redo run notably worse than the first attempt: 4002.9ms mean / 50.4% errors) |
+| Peak | 1000 | 983 | 4364.7 | 11249 | 85885 (48.5%) | see note | 4 (ceiling reached; three attempts, non-monotonic: 4002.9ms/50.4% -> 16140ms/61.7% -> 4364.7ms/48.5%, see Figure 44) |
 
-CloudWatch peaks for the redo run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first attempt),
-35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt).
+CloudWatch peaks for the redo (2nd) run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first
+attempt), 35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt).
+
+Third peak attempt (2026-09-04, Cloud9 summary): Completed requests 176,923, Total errors 85,885 (48.5%),
+Total time 180.002s, Mean latency 4,364.7ms, Effective rps 983, p50 1,257ms, p90 10,002ms, p95 11,249ms,
+p99 30,001ms, longest request 50,288ms, concurrent clients 6,740. Notably better than the second attempt
+on both mean latency and error rate, breaking the monotonic-degradation pattern seen in the variable-load
+tier (Figure 43) — reported as genuine non-monotonic variability rather than forced into that same trend.
+CloudWatch graphs, target group state, and Activity history for this third attempt are still to be
+captured.
 
 Activity history, redo run (full sequence, App-ASG settled at 4/4 Healthy afterwards):
 - Before any load: i-0c29df91de914926d replaced by i-052957d0b5b7a7829 after an EC2 health check found it

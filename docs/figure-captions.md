@@ -308,23 +308,27 @@ The tool needed progressively more concurrent clients to sustain the target rate
 attempts (17, then 2,785, then 2,514), reflecting how much slower each individual response had become as
 degradation accumulated.
 
-**Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds.
-On this run, mean latency reached 16,140 ms and 101,074 of 163,777 completed requests failed (61.7%), the
-great majority as connection-level failures rather than HTTP error responses; the 90th, 95th and 99th
-percentiles all cluster around 30 seconds, the tool's own request timeout, indicating that most failed
-requests were hanging rather than being refused outright. This is markedly worse than an earlier attempt
-at the same target parameters (4,002.9 ms mean, 50.4% errors), consistent with the same degradation seen
-in the repeated variable-load run (Figure 43) and pointing to genuine run-to-run variability under extreme
-load rather than a fixed, precisely repeatable ceiling. A likely contributor is visible in the Activity
-history: this run saw at least three separate rounds of ELB health-check failure and replacement, one
-instance slot being replaced twice within about ten minutes, versus two replacements in the first attempt.
-More instances dropping out and being replaced mid-test meant effective capacity was below the nominal
-four for stretches of the run, compounding the overload. Read together with Figure 46, where CPU
-utilization reaches 98.34% under this load, the evidence points to the application tier and the
-single-instance database both approaching their limits together: the Auto Scaling group had no further
-capacity to add once at its maximum of four instances, and a database with a fixed, small connection
-ceiling cannot be relieved by adding more application servers in front of it. This is the architecture's
-genuine capacity limit, not a misconfiguration.
+**Figure 44.** *(Evidence HP-1)* The peak-load run: 1,000 requests per second sustained for 180 seconds,
+run three times at identical settings over the course of this build. Unlike the variable-load tier
+(Figure 43), results here did not degrade monotonically. The first attempt averaged 4,002.9 ms mean
+latency with 50.4% errors. The second climbed sharply to 16,140 ms mean latency with 101,074 of 163,777
+completed requests failing (61.7%), the great majority as connection-level failures rather than HTTP error
+responses, with the 90th, 95th and 99th percentiles all clustering around 30 seconds, the tool's own
+request timeout, indicating most failed requests were hanging rather than being refused outright. The
+third attempt, shown here, recovered to 4,364.7 ms mean latency with 85,885 of 176,923 completed requests
+failing (48.5%) — close to the first attempt and the best of the three runs by both measures. A likely
+contributor to the second attempt's outlier result is visible in its Activity history (Figure 49): that
+run saw at least three separate rounds of ELB health-check failure and replacement, one instance slot
+being replaced twice within about ten minutes, briefly dropping effective capacity below the nominal four.
+That the third attempt did not reproduce this degree of churn, and its latency and error rate recovered
+accordingly, supports reading the second attempt as an unlucky concentration of health-check failures
+during that specific window rather than a fixed, worsening trend the way the variable-load tier showed.
+Read together with Figure 46, where CPU utilization reaches 98.34% under this load, the evidence points to
+the application tier and the single-instance database both approaching their limits together at this load
+level regardless of which attempt is examined: the Auto Scaling group had no further capacity to add once
+at its maximum of four instances, and a database with a fixed, small connection ceiling cannot be relieved
+by adding more application servers in front of it. This is the architecture's genuine capacity limit, not
+a misconfiguration.
 
 **Figure 45.** *(Evidence HP-2)* The Application Load Balancer's Target Response Time and Request Count
 over the test window, showing the response time climbing to a peak of 13.7 seconds and request volume
