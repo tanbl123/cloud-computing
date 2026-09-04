@@ -356,20 +356,26 @@ health-check failures itemised individually in Figure 49. Both metrics recover f
 healthy hosts returning to 4, confirming the group's self-healing completed cleanly without manual
 intervention.
 
-**Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history for the repeated load test, showing a
-more extensive sequence than the first attempt. Before any load was applied, `i-0c29df91de914926d` was
-replaced by `i-052957d0b5b7a7829` after an EC2 health check found it "terminated or stopped", the same
-Learner Lab session-stop pattern documented in issue I-08. During the variable and peak runs, three
-further rounds of ELB health-check failure occurred: `i-0c7479c687bb3569d` was replaced by
-`i-078fbba2b3c6488c9` at 06:49 PM, the earlier replacement `i-052957d0b5b7a7829` itself failed and was
-replaced by `i-03f35cdd89c04a531` at 06:53 PM, and `i-078fbba2b3c6488c9` failed a second time and was
-replaced by `i-0db87ff77fa55a1c8` at 07:01 PM. Two of the four running instance slots therefore failed and
-were replaced twice each within this single test, distinct from the four instances present in the first
-attempt at this test, each of which failed at most once. This higher rate of instance failure is a
-plausible explanation for why this run's latency and error rate (Figure 44) were substantially worse than
-the first attempt's. Separately, and cleanly, target tracking grew desired capacity from 2 to 4 via the
-`TargetTracking-App-ASG-AlarmHigh` alarm, launching `i-013d6789292b02d52` and `i-0bd60a44d0f58b7b4`. The
-group ended this run settled at 4/4 Healthy with no pending activity.
+**Figure 49.** *(Evidence SC-2, C3)* The `App-ASG` Activity history across the three repeated load tests,
+each showing a different churn shape. In the second attempt (redo), before any load was applied,
+`i-0c29df91de914926d` was replaced by `i-052957d0b5b7a7829` after an EC2 health check found it "terminated
+or stopped", the Learner Lab session-stop pattern documented in issue I-08; during the test itself, three
+further rounds of ELB health-check failure occurred, concentrated on only two of the four instance slots,
+each of which failed and was replaced twice (`i-0c7479c687bb3569d` to `i-078fbba2b3c6488c9` at 06:49 PM,
+`i-052957d0b5b7a7829` to `i-03f35cdd89c04a531` at 06:53 PM, `i-078fbba2b3c6488c9` to `i-0db87ff77fa55a1c8`
+at 07:01 PM), and target tracking grew desired capacity from 2 straight to 4 in a single step. This
+concentrated double-failure pattern is a plausible explanation for why the redo's latency and error rate
+(Figure 44) were substantially worse than the first attempt's. The third attempt shows a third, distinct
+pattern: after the same pre-test I-08 replacement (`i-03f35cdd89c04a531` to `i-0fcf8cf9e18dbdccf` at
+08:47 PM), target tracking scaled out in two separate steps (2-to-3 at 10:54 PM, 3-to-4 at 10:56 PM,
+matching the first attempt's pattern rather than the redo's single jump), and three *different* instance
+slots each failed exactly once during the test (`i-0a85c5020870602ef`, the pre-test replacement
+`i-0fcf8cf9e18dbdccf`, and the 2-to-3 scale-out instance `i-00c31198cea76d04f`, replaced respectively by
+`i-09e3be279800b3f33`, `i-01fa14ac517773e7` and `i-0034f6fa78d34f86d`). That the churn pattern differs on
+every attempt — concentrated double failures on two slots in the redo, single failures spread across
+three different slots in the third attempt — supports treating this as genuine, if unpredictable,
+instability under sustained load rather than a fixed, reproducible failure mode. All three attempts ended
+settled at 4/4 Healthy with no pending activity.
 
 **Figure 50.** *(Evidence SC-2, C3)* `App-ASG` back at 2/2 Healthy after a manually triggered scale-in,
 terminating `i-013d6789292b02d52` and `i-0bd60a44d0f58b7b4`. As with the first attempt, the target-tracking

@@ -163,18 +163,45 @@ Two of the four running instance slots failed and were replaced twice each durin
 most once each in the first attempt — the most plausible explanation for why this run's latency and
 error rate came out substantially worse.
 
+Activity history, third attempt (full sequence, App-ASG settled at 4/4 Healthy afterwards, desired
+capacity still 4 at time of capture):
+- 08:47:50 PM (2026-09-04T12:47:50Z), before any load: `i-03f35cdd89c04a531` taken out of service after
+  an EC2 health check found it "terminated or stopped" (the I-08 Learner Lab session-stop pattern),
+  replaced by `i-0fcf8cf9e18dbdccf`.
+- 10:54:25 PM (14:54:25Z): `TargetTracking-App-ASG-AlarmHigh` triggered, desired capacity 2 to 3;
+  `i-00c31198cea76d04f` launched, InService by ~10:59:40 PM.
+- 10:56:25 PM (14:56:25Z): the same alarm triggered again, desired capacity 3 to 4;
+  `i-0b90bd09ef2406b0d` launched, InService by ~11:01:45 PM.
+- 10:58:33 PM (14:58:33Z): `i-0a85c5020870602ef` (one of the original baseline instances) failed an ELB
+  health check, replaced by `i-09e3be279800b3f33`.
+- 11:04:42 PM (15:04:42Z): `i-0fcf8cf9e18dbdccf` (the pre-test I-08 replacement) itself failed an ELB
+  health check, replaced by `i-01fa14ac517773e7`.
+- 11:06:37 PM (15:06:37Z): `i-00c31198cea76d04f` (the 2-to-3 scale-out instance) failed an ELB health
+  check, replaced by `i-0034f6fa78d34f86d`.
+
+Final surviving instances: `i-0034f6fa78d34f86d`, `i-01fa14ac517773e7`, `i-09e3be279800b3f33`,
+`i-0b90bd09ef2406b0d`. Unlike the redo (two slots failing twice each), this run shows a different churn
+shape: three separate instance slots each failed exactly once, and only one of the four final instances
+(`i-0b90bd09ef2406b0d`) ran unreplaced from its original launch. The scale-out itself was also different
+from the redo: two steps (2-to-3-to-4), matching the first attempt's pattern rather than the redo's single
+2-to-4 jump.
+
 Time from load starting to a new instance serving traffic:
 - First attempt: ~5 minutes 5 seconds from alarm to InService, in two steps (18:54:40Z to 18:59:45Z for
   2-to-3, 18:56:36Z to 19:01:41Z for 3-to-4), closely matching the configured 300-second warmup.
 - Redo: ~5 minutes 7 seconds from alarm to InService, in a single 2-to-4 step (10:58:34Z onward).
+- Third attempt: ~5 minutes 15 seconds (2-to-3, 14:54:25Z to ~14:59:40Z) and ~5 minutes 20 seconds
+  (3-to-4, 14:56:25Z to ~15:01:45Z), in two steps again like the first attempt.
 
-Scale-in: on both the first attempt and the redo, the target-tracking policy did not trigger automatic
+Scale-in: on the first attempt and the redo, the target-tracking policy did not trigger automatic
 scale-in within the available observation window despite CPU returning to baseline. Desired capacity was
 manually reduced from 4 to 2 each time to demonstrate the scale-in mechanism:
 - First attempt, 2026-09-03T21:16:06Z: terminated i-0a36b41e27175b3e9 and i-057f2818dadba42e6.
 - Redo, 2026-09-04T12:28:46Z: terminated i-013d6789292b02d52 and i-0bd60a44d0f58b7b4.
 Needing the same manual intervention on both runs supports treating the scale-in delay as a genuine,
-repeatable characteristic of this policy configuration rather than a one-off anomaly.
+repeatable characteristic of this policy configuration rather than a one-off anomaly. As of this capture,
+the third attempt is still sitting at desired capacity 4 with automatic scale-in not yet triggered — the
+same manual reduction to 2 is expected to be needed again.
 
 ## Stage 17, cost
 
