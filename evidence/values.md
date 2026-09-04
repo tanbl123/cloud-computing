@@ -125,7 +125,7 @@ being stopped and started, so this is the address to put in the report and use f
 | Baseline (no load) | — | — | 359.87 (TTFB) / 622.27 (total, cold connection) | | — | 2 | 2 |
 | Normal | 50 | 50 | 42.9 | 187 | 0 | 2 | 2 |
 | Variable | 250 | 247 | 5253.2 | 13092 | 14938 (33.6%) | 2 | see below (3rd attempt; degradation trend across all 3 attempts: 577.7ms/0.8% -> 3957.9ms/14.6% -> 5253.2ms/33.6%) |
-| Peak | 1000 | 983 | 4364.7 | 11249 | 85885 (48.5%) | see note | 4 (ceiling reached; three attempts, non-monotonic: 4002.9ms/50.4% -> 16140ms/61.7% -> 4364.7ms/48.5%, see Figure 44) |
+| Peak | 1000 | 983 | 4364.7 | 11249 | 85885 (48.5%) | see note | 4, manually reduced to 2 (ceiling reached; three attempts, non-monotonic: 4002.9ms/50.4% -> 16140ms/61.7% -> 4364.7ms/48.5%, see Figure 44) |
 
 CloudWatch peaks for the redo (2nd) run: ALB Target Response Time peaked at 13.7 sec (vs 5.4 sec first
 attempt), 35.86K total requests. ASG CPUUtilization peaked at 98.34% (vs 96.68% first attempt).
@@ -193,15 +193,17 @@ Time from load starting to a new instance serving traffic:
 - Third attempt: ~5 minutes 15 seconds (2-to-3, 14:54:25Z to ~14:59:40Z) and ~5 minutes 20 seconds
   (3-to-4, 14:56:25Z to ~15:01:45Z), in two steps again like the first attempt.
 
-Scale-in: on the first attempt and the redo, the target-tracking policy did not trigger automatic
-scale-in within the available observation window despite CPU returning to baseline. Desired capacity was
-manually reduced from 4 to 2 each time to demonstrate the scale-in mechanism:
+Scale-in: on all three attempts, the target-tracking policy did not trigger automatic scale-in within the
+available observation window despite CPU returning to baseline (on the third attempt, CPU had fallen to a
+peak of just ~9% and stayed there for hours before the manual edit). Desired capacity was manually reduced
+from 4 to 2 each time to demonstrate the scale-in mechanism:
 - First attempt, 2026-09-03T21:16:06Z: terminated i-0a36b41e27175b3e9 and i-057f2818dadba42e6.
 - Redo, 2026-09-04T12:28:46Z: terminated i-013d6789292b02d52 and i-0bd60a44d0f58b7b4.
-Needing the same manual intervention on both runs supports treating the scale-in delay as a genuine,
-repeatable characteristic of this policy configuration rather than a one-off anomaly. As of this capture,
-the third attempt is still sitting at desired capacity 4 with automatic scale-in not yet triggered — the
-same manual reduction to 2 is expected to be needed again.
+- Third attempt, 2026-09-04T18:30:21Z: terminated i-0034f6fa78d34f86d and i-0b90bd09ef2406b0d. Group
+  settled at 2/2 Healthy.
+Needing the same manual intervention on all three runs, the last time after CPU had been low for hours,
+confirms the scale-in delay as a genuine, repeatable characteristic of this policy configuration rather
+than a one-off anomaly or a timing issue on our part.
 
 ## Stage 17, cost
 

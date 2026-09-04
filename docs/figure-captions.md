@@ -382,15 +382,18 @@ three different slots in the third attempt — supports treating this as genuine
 instability under sustained load rather than a fixed, reproducible failure mode. All three attempts ended
 settled at 4/4 Healthy with no pending activity.
 
-**Figure 50.** *(Evidence SC-2, C3)* `App-ASG` back at 2/2 Healthy after a manually triggered scale-in,
-terminating `i-013d6789292b02d52` and `i-0bd60a44d0f58b7b4`. As with the first attempt, the target-tracking
-policy did not trigger automatic scale-in within the available observation window despite CPU returning to
-baseline, so desired capacity was reduced from 4 to 2 directly. The resulting Activity history entry
-records the cause honestly as a user-requested constraint update rather than a CloudWatch alarm, while
-still exercising the identical termination mechanism an automatic scale-in would use: instances selected
-for termination, taken out of service, and deregistered from the target group. That this same manual
-scale-in was needed on both the original run and the redo strengthens the case that the scale-in delay is
-a genuine, repeatable characteristic of this policy configuration rather than a one-off anomaly.
+**Figure 50.** *(Evidence SC-2, C3)* `App-ASG` back at 2/2 Healthy after a manually triggered scale-in on
+the third attempt, terminating `i-0034f6fa78d34f86d` and `i-0b90bd09ef2406b0d`. By this point CPU
+utilization had fallen to a peak of only around 9% and stayed there for hours, yet the target-tracking
+policy still had not triggered automatic scale-in, so desired capacity was reduced from 4 to 2 directly.
+The resulting Activity history entry records the cause honestly as a user-requested constraint update
+rather than a CloudWatch alarm, while still exercising the identical termination mechanism an automatic
+scale-in would use: instances selected for termination, taken out of service, and deregistered from the
+target group. The same manual intervention was needed on all three attempts — the first
+(`i-0a36b41e27175b3e9`, `i-057f2818dadba42e6`), the redo (`i-013d6789292b02d52`, `i-0bd60a44d0f58b7b4`),
+and this third run — and this time with hours of sustained low CPU elapsed beforehand rather than minutes,
+which rules out simple impatience as an explanation and confirms the scale-in delay as a genuine,
+repeatable characteristic of this policy configuration rather than a one-off anomaly.
 
 **Figure 51.** *(Evidence HP-2, C3)* The `TargetTracking-App-ASG-AlarmHigh` CloudWatch alarm that
 drives the scaling policy, showing its exact rule: CPUUtilization greater than 50 for 3 datapoints within
