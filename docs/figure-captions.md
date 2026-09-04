@@ -331,14 +331,19 @@ by adding more application servers in front of it. This is the architecture's ge
 a misconfiguration.
 
 **Figure 45.** *(Evidence HP-2)* The Application Load Balancer's Target Response Time and Request Count
-over the test window, showing the response time climbing to a peak of 13.7 seconds and request volume
-reaching 35,860, tracking the three load tiers in sequence. Both the higher peak latency and the lower
-total request count compared with an earlier attempt at the same test (5.4 seconds, nearly 50,000
-requests) are consistent with the additional instance churn described under Figure 44.
+over the test window, tracking the three load tiers in sequence, shown here for the second (redo) attempt:
+response time climbing to a peak of 13.7 seconds against 35,860 requests. This is markedly worse than
+both the first attempt (5.4 seconds, nearly 50,000 requests) and the third attempt (6.7 seconds, 54,770
+requests), consistent with the concentrated instance churn described under Figure 49 being specific to
+this one run rather than a fixed characteristic of the peak-load tier.
 
 **Figure 46.** *(Evidence HP-2)* CPU Utilization for `App-ASG` over the same window, climbing from a
-resting baseline to a peak of 98.34% during the peak-load run. This confirms the application tier itself
-was genuinely saturated, not only the database, at the point the peak test's error rate rose sharply.
+resting baseline to a peak of 98.34% during the second (redo) attempt's peak-load run. This confirms the
+application tier itself was genuinely saturated, not only the database, at the point that run's error rate
+rose sharply. The third attempt peaked far lower, at only 69.34%, with the `TargetTracking-App-ASG-AlarmHigh`
+alarm cycling into and out of alarm state twice rather than once continuously — a further sign that this
+run's application tier was under noticeably less sustained pressure than the redo, consistent with its
+better latency and error-rate outcome (Figure 44).
 
 **Figure 47.** *(Evidence SC-2, C3)* The `App-TG` target group's registered targets once the group settled
 after the repeated load test: all four instances, `i-0db87ff77fa55a1c8`, `i-0bd60a44d0f58b7b4`,
