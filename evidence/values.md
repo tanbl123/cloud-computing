@@ -228,7 +228,7 @@ than a one-off anomaly or a timing issue on our part.
 
 | Item | Value |
 |---|---|
-| RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, taken 5 Sep 2026 |
+| RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, MySQL 8.4.9, taken 5 Sep 2026 07:39 UTC+8, status Available |
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
 
 ## Stage 21, cost
