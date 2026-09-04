@@ -47,7 +47,7 @@ teammate wants their own copy.
 | ALB-SG | `sg-0dd8a35db49344985` |
 | App-SG | `sg-078027c0af8c5cc2e` |
 | DB-SG | `sg-0876c9dc85bd6f67f` |
-| Build-SG | `sg-05d99a3d8e3b95da7` (My IP at build time: 27.125.245.206/32) |
+| Build-SG | `sg-05d99a3d8e3b95da7` (My IP at final screenshot, stage 17: 161.142.214.92/32; was 27.125.245.206/32 at build time — I-05 pattern) |
 | Cloud9 SG (`aws-cloud9-asm-Cloud9-...InstanceSecurityGroup-y8ZVJVV6DHLG`) | `sg-03363bdb3bb195521` |
 | Cloud9 placement | `asm-Public-A` (subnet-0cb19ed319b5dfa45), SSH connection, Amazon Linux 2023 — draw it here on the diagram |
 | Default SG of asm-VPC (unused) | `sg-0f6a3c8fefe61cf41` |
