@@ -73,6 +73,27 @@ Secrets Manager at runtime):
 - Secrets Manager → `Mydbsecret` → Edit → changed `host` from the RDS endpoint to Data-Server's private
   IP (`10.0.2.41`)
 
+Follow-up: a Lab session ending stopped Data-Server (a standalone instance, so unlike App-ASG's
+instances nothing auto-restarts it). Replaced the ad-hoc `nohup socat` with a persistent systemd
+service so it survives future reboots automatically:
+```
+sudo tee /etc/systemd/system/db-forward.service > /dev/null <<'EOF'
+[Unit]
+Description=TCP forward to RDS
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/socat TCP-LISTEN:3306,fork,reuseaddr TCP:asm-rds.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now db-forward.service
+```
+
 Force the app tier to pick up the change:
 - Terminated both running `App-Instance` entries in EC2 → App-ASG launched two replacements
   automatically (the same self-healing mechanism demonstrated in stage 16)

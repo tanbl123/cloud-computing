@@ -569,6 +569,13 @@ $100" as of 5 Sep 2026. Recorded as a dated snapshot, not a final figure, since 
 accruing between now and the live demonstration -- re-checked immediately before recording the
 presentation video for the number actually spoken in the video.
 
+**Figure 77.** *(Stage 20 follow-up)* Session Manager terminal on `Data-Server` showing
+`sudo systemctl status db-forward.service`: `Active: active (running)`, `enabled`, Main PID running
+`socat` bound to port 3306. Captured after the Learner Lab session ending stopped `Data-Server` --
+a standalone instance not covered by App-ASG's self-healing (see I-08) -- which broke `/students`
+until the instance was restarted and the original ad-hoc `nohup socat` command was replaced with this
+persistent systemd service so the forwarder now survives future reboots automatically.
+
 ---
 
 ## Note on the DB-SG screenshot
