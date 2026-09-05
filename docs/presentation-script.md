@@ -51,7 +51,19 @@ The database itself, `asm-rds`, is a single MySQL db.t3.micro instance, and we a
 
 Security groups are chained, not CIDR-based: the load balancer accepts the internet, the app tier only
 accepts the load balancer, and the database tier only accepts specific application-layer security
-groups — never a raw IP range. That's one of our strongest defence-in-depth arguments."
+groups — never a raw IP range. That's one of our strongest defence-in-depth arguments.
+
+You'll also see two edge protections on the diagram: Shield Standard, which is automatic on the load
+balancer and needs no configuration, and AWS WAF, drawn with a dashed outline. We designed WAF into
+the architecture, but this Academy Lab's IAM policy doesn't permit deploying it, so it's shown as a
+designed control we couldn't provision here, not something we forgot.
+
+The diagram also shows our three additional features and one bonus feature, which I'll demonstrate in
+detail shortly, but pointing them out now while we're looking at the whole picture: between the app
+tier and the database sits `Data-Server`, a middle-tier proxy we added ourselves; next to the primary
+database is `asm-rds-replica`, a read replica; over on the right, two S3 buckets handle versioned
+backups and VPC flow log delivery; and — drawn with a dashed border to mark it as a bonus, not one of
+the three required features — Amazon SNS sends scaling notifications from the Auto Scaling group."
 
 ---
 
