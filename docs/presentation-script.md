@@ -228,7 +228,33 @@ this architecture's real limit is, not the database's replication layer."
 
 ---
 
-## 10. Cost estimate (1 minute)
+## 10. Bonus feature — SNS scaling notifications (stage 18)
+
+*On screen: SNS console (topic and subscription), then App-ASG's Activity notifications config, then
+one of the actual notification emails.*
+
+"Before the cost estimate, one more feature worth mentioning, even though it doesn't count toward our
+three required additional features. We built this first, at stage 18: automated scaling notifications
+using Amazon SNS.
+
+We created a topic, `asm-scaling-notifications`, and an email subscription — worth mentioning it
+landed in spam, so anyone setting this up for real should expect to check there. We wired it to our
+Auto Scaling group's Activity notifications, covering all six event types: launch, terminate, launch
+error, terminate error, and the two replace-root-volume events. To prove it works with genuine events
+rather than just the automatic test message SNS sends when you first save the configuration, we
+manually cycled the group's desired capacity from 2 to 3 and back to 2, and captured the real Launch
+and Terminate emails that triggered — distinct from that initial test notification.
+
+Our lecturer reviewed this and ruled that a native, console-configured notification setup like this is
+too simple to count as one of the three required additional features — and we agree that's a fair call
+compared to the depth of the three we're about to cover. So this is built, working, and part of our
+architecture, but it's a bonus, not one of the three we're claiming marks for. We wanted to show it
+anyway, because it's a real, functioning piece of the system, and it's directly reflected on our
+architecture diagram with a dashed border marking it as such."
+
+---
+
+## 11. Cost estimate (1 minute)
 
 *On screen: the AWS Pricing Calculator summary page (Figure 75).*
 
@@ -252,7 +278,7 @@ of the $100 lab budget."
 
 ---
 
-## 11. Lab constraints and closing (30–45 seconds)
+## 12. Lab constraints and closing (30–45 seconds)
 
 *On screen: back to the architecture diagram, or a closing slide.*
 
