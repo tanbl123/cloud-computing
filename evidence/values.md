@@ -263,6 +263,7 @@ bonus/extra, not one of the required three.
 | Configuration choices | Single instance (no Multi-AZ on the replica), storage autoscaling max lowered from the 1000 GiB default to 50 GiB, Enhanced Monitoring disabled, deletion protection off — all to keep cost and complexity minimal |
 | Read replica endpoint | `asm-rds-replica.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306` |
 | Replication confirmed | Added "Farah Izzati binti Zulkifli" (id 11) via the app (writes to primary `asm-rds`), then queried the replica's own endpoint directly from Cloud9 and it appeared there too — genuine replication, not the same instance |
+| ReplicaLag | Stayed at ~0 seconds throughout, including after a 5,000-row burst insert direct to the primary — replication easily keeps up at this scale, in contrast to the compute-tier bottleneck already documented in stage 16. Burst test rows deleted afterward from the primary (propagates to the replica). |
 
 ## Stage 22, cost
 

@@ -538,6 +538,24 @@ demonstration ("Ahmad Faiz bin Ismail"). This is the end-to-end proof the featur
 request path is now App instance &rarr; Data-Server (socat) &rarr; RDS, with `DB-SG` refusing any
 connection that does not originate from `Data-SG`.
 
+**Figure 72.** *(Evidence additional feature 3: RDS read replica)* `asm-rds-replica` created and
+Available in the RDS console, same region as the primary (us-east-1a — the I-10/I-11 region restriction
+only affects us-east-2), db.t3.micro, Single-AZ, alongside its source `asm-rds`. This feature replaces
+stage 18's SNS notifications as the third counted additional feature, and is motivated directly by stage
+16's finding that the single RDS instance is a genuine capacity bottleneck under load.
+
+**Figure 73.** *(Evidence additional feature 3: RDS read replica)* A record ("Farah Izzati binti
+Zulkifli") added via the app, which writes to the primary, then queried directly against the replica's
+own endpoint from Cloud9 and found present there too. This is the feature's core proof point: the two
+databases are genuinely separate instances kept in sync by replication, not the same underlying storage.
+
+**Figure 74.** *(Evidence additional feature 3: RDS read replica)* The `ReplicaLag` CloudWatch metric,
+staying at essentially 0 seconds throughout, including immediately after a 5,000-row burst insert direct
+to the primary. Reported honestly rather than manufactured into a bigger number: at this scale, MySQL
+asynchronous replication on even a small db.t3.micro instance keeps up easily, which is a genuine and
+informative contrast to stage 16's finding that the compute tier (EC2/ALB) becomes the bottleneck well
+before the database replication layer does.
+
 ---
 
 ## Note on the DB-SG screenshot
