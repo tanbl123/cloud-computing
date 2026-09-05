@@ -489,6 +489,12 @@ identity-based policy." The Lab deliberately blocks introspection of its own per
 just the boundaries themselves, so empirical testing (as done here) is the only way to discover what is and
 is not permitted.
 
+**Figure 63.** *(Evidence additional feature 2: backup versioning and lifecycle)* `latest-backup.sql`'s
+Versions tab showing two versions: the original (2.9 KB, 5 Sep 2026 08:23) and a current version (3.0 KB,
+08:37) created after adding a student record in the app and re-running the backup under the same object
+key. This is the feature's proof point — versioning is not just enabled, it visibly preserves a prior copy
+of genuinely different data rather than silently overwriting it.
+
 ---
 
 ## Note on the DB-SG screenshot

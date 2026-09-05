@@ -235,6 +235,7 @@ than a one-off anomaly or a timing issue on our part.
 | Cross-region backup file | `cross-region-backup.sql`, 64 lines, dumped from `asm-rds` (database `STUDENTS`, server version 8.4.9) via Cloud9, same technique as stage 09's `data.sql`. Kept and reused as the backup file for the pivoted same-region feature below. |
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
 | First backup upload | `cross-region-backup.sql` uploaded as `latest-backup.sql` (fixed key, so re-uploads create new versions rather than new objects) |
+| Second version confirmed | `latest-backup.sql` now has 2 versions: current (`eNNOHMFx8bgLB1djAo...`, 3.0 KB, 5 Sep 2026 08:37) and original (`DSIV_0.MxfDm0qVM...`, 2.9 KB, 5 Sep 2026 08:23). Second version created after adding a student record ("Ahmad Faiz bin Ismail") in the app and re-running the backup. |
 
 ## Stage 21, cost
 
