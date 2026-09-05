@@ -271,7 +271,8 @@ bonus/extra, not one of the required three.
 |---|---|
 | Monthly estimate total | $102.42 |
 | 12-month estimate total | $1,229.04 |
-| Budget consumed by the end | $ |
+| Budget consumed (snapshot, 5 Sep 2026) | $8.70 of $100.00 |
+| Budget consumed by the end | $ (re-check right before recording the presentation video — this figure moves) |
 
 AWS Pricing Calculator, us-east-1, 12-month view. Line items:
 

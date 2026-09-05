@@ -564,6 +564,11 @@ the Data-Server middle tier (1x t3.micro), both RDS instances (`asm-rds` primary
 both db.t3.micro Single-AZ), the ALB, the NAT Gateway, Secrets Manager, and the S3 backup bucket.
 Monthly cost $102.42, 12-month total $1,229.04.
 
+**Figure 76.** *(CO-1: actual Lab spend, snapshot)* AWS Academy Learner Lab page showing "Used $8.7 of
+$100" as of 5 Sep 2026. Recorded as a dated snapshot, not a final figure, since Lab usage keeps
+accruing between now and the live demonstration -- re-checked immediately before recording the
+presentation video for the number actually spoken in the video.
+
 ---
 
 ## Note on the DB-SG screenshot
