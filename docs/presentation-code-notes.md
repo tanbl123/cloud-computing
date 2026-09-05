@@ -11,7 +11,7 @@ mysqldump -h <CapstonePOC private IP or localhost> -u nodeapp -p STUDENTS > data
 ```
 Then imported into RDS from Cloud9 using the RDS endpoint.
 
-## Stage 18 — SNS scaling notifications
+## Stage 18 — SNS scaling notifications (bonus, not one of the 3 counted features)
 
 No code — console configuration only:
 - Created SNS topic `asm-scaling-notifications` (Standard type)
@@ -79,3 +79,22 @@ Force the app tier to pick up the change:
 
 Verification: browsed the ALB URL's `/students` page and confirmed the full list loaded correctly,
 proving the request path is now App instance → Data-Server (socat) → RDS.
+
+## Stage 21 — RDS read replica (replaces SNS as the 3rd counted feature)
+
+Console configuration (RDS → `asm-rds` → Actions → Create read replica), all within us-east-1 so the
+I-10/I-11 region restriction doesn't apply:
+- DB instance identifier: `asm-rds-replica`
+- Instance class: db.t3.micro, Single-AZ (not Multi-AZ, to keep cost down)
+- Same DB subnet group and `DB-SG` as the primary, not publicly accessible
+- Storage autoscaling max lowered from the 1000 GiB default to 50 GiB, Enhanced Monitoring disabled,
+  deletion protection off — all deliberate cost/complexity trims
+
+Demonstration (once Available): write a new record via the app (hits the primary), then query the
+replica's own endpoint directly from Cloud9 to confirm it appears there too, and capture the
+`ReplicaLag` CloudWatch metric as proof of genuine asynchronous replication.
+
+Motivation: stage 16's load test already showed the single RDS instance becoming a real bottleneck
+under peak load ("a database with a fixed, small connection ceiling cannot be relieved by adding more
+application servers in front of it"). A read replica is the natural next step for read scaling against
+that exact limitation.

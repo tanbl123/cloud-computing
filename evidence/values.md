@@ -251,7 +251,18 @@ than a one-off anomaly or a timing issue on our part.
 | App instances cycled | Terminated `i-02a5c41fba293c24c` and `i-077440bb16248b138`; App-ASG launched replacements `i-09a78a422f9306ec7` (us-east-1a) and `i-0457b5ba06997b445` (us-east-1b), both 3/3 healthy, booted with the updated secret |
 | End-to-end verification | ALB URL `/students` loads the full list correctly through App instance &rarr; Data-Server (socat) &rarr; RDS, with DB-SG no longer accepting App-SG directly. Middle tier confirmed working. |
 
-## Stage 21, cost
+## Stage 21, RDS read replica
+
+Replaces SNS scaling notifications (stage 18) as the third counted additional feature — the lecturer
+ruled the native ASG notification setup too simple to count. SNS notifications are kept in the build as a
+bonus/extra, not one of the required three.
+
+| Item | Value |
+|---|---|
+| Read replica | `asm-rds-replica`, role Replica, source `asm-rds`, db.t3.micro, MySQL, us-east-1a, same region (not blocked by I-10/I-11, which only affect us-east-2), status Available |
+| Configuration choices | Single instance (no Multi-AZ on the replica), storage autoscaling max lowered from the 1000 GiB default to 50 GiB, Enhanced Monitoring disabled, deletion protection off — all to keep cost and complexity minimal |
+
+## Stage 22, cost
 
 | Item | Value |
 |---|---|

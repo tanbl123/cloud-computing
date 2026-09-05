@@ -76,9 +76,10 @@
 <p>Because phase 3 never reads database settings from environment variables, its <code>rc.local</code> re-exporting only <code>APP_PORT</code> is sufficient for reboot survival. Still test a reboot before imaging at stage 11.</p>
 
 <h2>3. Stage progress</h2>
-<p>Stages are the runbook's. Put your initials and the date when you complete one. Stages 18 to 21 are
-not part of the shared runbook: one member is building all three additional features (worth 5 marks,
-3 required for the group) in their own account, then doing the Pricing Calculator last so it prices
+<p>Stages are the runbook's. Put your initials and the date when you complete one. Stages 18 to 22 are
+not part of the shared runbook: one member is building the three counted additional features (worth 5
+marks) in their own account -- stage 18 (SNS) turned out too simple to count and is kept as a bonus, so
+stages 19, 20 and 21 are the three that count -- then doing the Pricing Calculator last so it prices
 in what those features add. Only fill these in for that account.</p>
 <table border="1" cellpadding="6" cellspacing="0">
 <tr><th>Stage</th><th>[Member 1]</th><th>[Member 2]</th><th>[Member 3]</th><th>Notes</th></tr>
@@ -99,10 +100,11 @@ in what those features add. Only fill these in for that account.</p>
 <tr><td>15 Flow logs</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. Rebuilt on S3 after the CloudWatch/LabRole failure (issue I-07). 55 objects delivered to <code>asm-flowlogs-401858547100</code> within the expected window. Figures 39 and 40 captured: config, and decompressed records showing an ACCEPT pair between the ALB node (10.0.0.146) and an ASG instance (10.0.3.14) on port 80, plus REJECT entries against Cloud9's interface from unsolicited internet scanning. Evidence SEC-1</td></tr>
 <tr><td>16 Load test</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. All three tiers, baseline, CPU/latency graphs, and self-healing all captured (Figures 41 to 49). Target-tracking scale-in did not trigger automatically after 35+ minutes of CPU at baseline, so desired capacity was manually reduced from 4 to 2 to demonstrate the mechanism honestly (Figure 50, cause recorded as a user request, not an alarm). App-Server terminated 4 Sep 2026, closing out the last loose end from stage 14. Evidence HP-1, HP-2, SC-2.</td></tr>
 <tr><td>17 Lock down</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Security hardening done: DB-SG's Build-SG rule removed (Figure 52, after Figure 8's before), then Build-SG deleted. CapstonePOC (never terminated since stage 08, see I-09) terminated first to unblock the deletion. The Pricing Calculator part of this stage moved to 21, done after the additional features so it prices in whatever they add.</td></tr>
-<tr><td>18 SNS scaling notifications</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. Topic asm-scaling-notifications created, email subscription confirmed (landed in Spam, worth a report note), wired to App-ASG's Activity notifications for all six event types. Genuine Launch and Terminate emails captured by manually cycling desired capacity 2 to 3 to 2, distinct from the automatic TEST_NOTIFICATION sent when the config was saved. Figures 54 to 58.</td></tr>
+<tr><td>18 SNS scaling notifications (bonus, does not count)</td><td>4 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done, but the lecturer ruled the native ASG notification setup too simple to count as one of the three required additional features -- see stage 21. Kept in the build and report as a bonus extra, not one of the three. Topic asm-scaling-notifications created, email subscription confirmed (landed in Spam, worth a report note), wired to App-ASG's Activity notifications for all six event types. Genuine Launch and Terminate emails captured by manually cycling desired capacity 2 to 3 to 2, distinct from the automatic TEST_NOTIFICATION sent when the config was saved. Figures 54 to 58.</td></tr>
 <tr><td>19 Backup versioning and lifecycle (was cross-region DB migration)</td><td>5 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. True cross-region deployment ruled out entirely -- see I-10 and I-11, both confirmed Academy Lab restrictions blocking resource creation (and in RDS's case, even read access) outside us-east-1. Pivoted to same-region: mysqldump backup uploaded to asm-db-backups-401858547100 as latest-backup.sql, a genuine second version confirmed after adding a student record and re-uploading, and the age-out-old-backups lifecycle rule created (Glacier Instant Retrieval at 7 days, permanent delete at 30). Figures 59 to 64.</td></tr>
 <tr><td>20 Middle-tier EC2</td><td>5 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Done. Data-SG created (3306 from App-SG only), Data-Server launched in asm-App-A with LabInstanceProfile (Session Manager, no SSH needed), DB-SG's App-SG rule replaced with Data-SG. socat installed on Data-Server forwarding 3306 to asm-rds. Mydbsecret's host changed to Data-Server's private IP (10.0.2.41) -- no AMI or app code changes needed, since the app already reads its DB host from the secret at runtime. App-ASG instances terminated and replaced to force a secret refetch. End-to-end verified: /students loads correctly via App instance -> Data-Server -> RDS. Figures 65 to 71.</td></tr>
-<tr><td>21 Pricing Calculator (CO-1, CO-2)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Moved from stage 17. 12-month, us-east-1 estimate covering the base architecture plus whichever of stages 18 to 20 this account built, exported as a file as well as screenshotted.</td></tr>
+<tr><td>21 RDS read replica</td><td>5 Sep 2026</td><td>&nbsp;</td><td>&nbsp;</td><td>Replaces stage 18 (SNS) as the third counted additional feature. asm-rds-replica created in the same region (us-east-1a, not subject to the I-10/I-11 region block, which only affects us-east-2), db.t3.micro, Single-AZ, storage autoscaling capped at 50 GiB, Enhanced Monitoring off, deletion protection off. Status Available. Still to capture: replication demonstration (write to primary, read from replica) and the ReplicaLag CloudWatch metric.</td></tr>
+<tr><td>22 Pricing Calculator (CO-1, CO-2)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>Moved from stage 17. 12-month, us-east-1 estimate covering the base architecture plus stages 19, 20 and 21 (the three counted additional features; SNS at stage 18 is a bonus, not counted), exported as a file as well as screenshotted.</td></tr>
 </table>
 
 <h2>4. Decision log</h2>
@@ -157,8 +159,8 @@ in what those features add. Only fill these in for that account.</p>
 <tr><td>HA-2</td><td>RDS backup and recovery settings</td><td>06</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>SEC-1</td><td>Security group rules for all three tiers</td><td>04, 15</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>SEC-2</td><td>Mydbsecret created and used by the app</td><td>07, 10</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-1</td><td>12-month Pricing Calculator export</td><td>21</td><td>[  ]</td><td>[  ]</td></tr>
-<tr><td>CO-2</td><td>Sizing rationale</td><td>21</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-1</td><td>12-month Pricing Calculator export</td><td>22</td><td>[  ]</td><td>[  ]</td></tr>
+<tr><td>CO-2</td><td>Sizing rationale</td><td>22</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>HP-1</td><td>Load test method, tool, duration</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>HP-2</td><td>Latency, throughput, errors, scaling</td><td>16</td><td>[  ]</td><td>[  ]</td></tr>
 <tr><td>DEMO-1</td><td>Who built what, and who demos what</td><td>&mdash;</td><td>[  ]</td><td>[  ]</td></tr>
