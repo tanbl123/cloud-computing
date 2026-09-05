@@ -234,6 +234,7 @@ than a one-off anomaly or a timing issue on our part.
 | S3 bucket creation in Ohio | Blocked — see issue I-11. `asm-db-backups-ohio-401858547100` failed to create: "the s3:CreateBucket permission is required." Confirms the restriction is not RDS-specific — resource creation outside us-east-1 is blocked account-wide for this Lab. |
 | Cross-region backup file | `cross-region-backup.sql`, 64 lines, dumped from `asm-rds` (database `STUDENTS`, server version 8.4.9) via Cloud9, same technique as stage 09's `data.sql`. Kept and reused as the backup file for the pivoted same-region feature below. |
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
+| First backup upload | `cross-region-backup.sql` uploaded as `latest-backup.sql` (fixed key, so re-uploads create new versions rather than new objects) |
 
 ## Stage 21, cost
 
