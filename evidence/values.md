@@ -244,6 +244,7 @@ than a one-off anomaly or a timing issue on our part.
 |---|---|
 | Data-SG | `sg-0af31b6f078906814`, inbound TCP 3306 from App-SG, outbound all traffic |
 | Data-Server instance | `i-07ca44187584db64c`, t3.micro, Ubuntu 24.04 LTS, `asm-App-A` (us-east-1a), Data-SG, LabInstanceProfile, no public IP |
+| DB-SG updated | App-SG rule removed; now accepts 3306 from Cloud9 SG and Data-SG only |
 
 ## Stage 21, cost
 
