@@ -165,7 +165,18 @@ application AMI or any code at all. We just edited the `Mydbsecret` secret's `ho
 Data-Server's private IP, `10.0.2.41`, instead of the RDS endpoint directly. We terminated the running
 application instances so the Auto Scaling group launched replacements that picked up the new secret
 value, and confirmed the `/students` page still loads correctly end-to-end — now routed through
-App instance → Data-Server → RDS, instead of straight to RDS."
+App instance → Data-Server → RDS, instead of straight to RDS.
+
+One honest limitation we found afterward: when our Learner Lab session ended, it stopped `Data-Server`,
+and the site broke. Our Auto Scaling group instances recovered automatically because that's exactly
+what an ASG is built to do, but `Data-Server` is a standalone instance outside the ASG, so nothing
+detects or restarts it — we had to start it manually. We also found that the `socat` forwarder we'd
+started by hand didn't come back on its own after the reboot, since it was never a proper background
+service. We fixed that by replacing it with a systemd unit — `db-forward.service`, with
+`Restart=always` and enabled at boot — so from now on the forwarder comes back automatically whenever
+the instance is running. It's a small thing, but it's a genuine, real-world illustration of the
+difference between an auto-scaled tier's built-in self-healing and a standalone instance that has
+none by default."
 
 ---
 
