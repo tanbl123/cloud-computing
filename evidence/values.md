@@ -238,6 +238,13 @@ than a one-off anomaly or a timing issue on our part.
 | Second version confirmed | `latest-backup.sql` now has 2 versions: current (`eNNOHMFx8bgLB1djAo...`, 3.0 KB, 5 Sep 2026 08:37) and original (`DSIV_0.MxfDm0qVM...`, 2.9 KB, 5 Sep 2026 08:23). Second version created after adding a student record ("Ahmad Faiz bin Ismail") in the app and re-running the backup. |
 | Lifecycle rule | `age-out-old-backups`, Enabled, scope entire bucket, noncurrent versions: transition to Glacier Instant Retrieval after 7 days, permanently delete after 30 days |
 
+## Stage 20, middle-tier EC2
+
+| Item | Value |
+|---|---|
+| Data-SG | `sg-0af31b6f078906814`, inbound TCP 3306 from App-SG, outbound all traffic |
+| Data-Server instance | `i-07ca44187584db64c`, t3.micro, Ubuntu 24.04 LTS, `asm-App-A` (us-east-1a), Data-SG, LabInstanceProfile, no public IP |
+
 ## Stage 21, cost
 
 | Item | Value |
