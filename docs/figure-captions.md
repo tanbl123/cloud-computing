@@ -462,6 +462,12 @@ that Versioning preserves prior copies rather than silently overwriting them, pa
 feature; the RDS side — a manual snapshot copied to another region and restored — is documented in the
 figures that follow.
 
+**Figure 60.** *(Evidence additional feature 2: cross-region DB migration)* The `mysqldump` command run
+from Cloud9 against `asm-rds`, and its output confirming a valid 64-line backup file
+(`cross-region-backup.sql`) containing the `STUDENTS` database schema and data. This is the same technique
+used for the original stage 09 migration, reused here after issue I-10 ruled out AWS's native RDS
+cross-region snapshot copy for this Lab account.
+
 ---
 
 ## Note on the DB-SG screenshot

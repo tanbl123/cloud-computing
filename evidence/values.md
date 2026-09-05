@@ -230,6 +230,7 @@ than a one-off anomaly or a timing issue on our part.
 |---|---|
 | RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, MySQL 8.4.9, taken 5 Sep 2026 07:39 UTC+8, status Available |
 | Cross-region snapshot copy | Blocked — see issue I-10. `rds:CopyDBSnapshot` is not granted to this Lab identity at all (confirmed after routing around a separate KMS-alias-listing SCP block). Pivoted to manual mysqldump-and-restore into a new RDS instance created directly in us-east-2 (Ohio), the same technique used for the original stage 09 migration. |
+| Cross-region backup file | `cross-region-backup.sql`, 64 lines, dumped from `asm-rds` (database `STUDENTS`, server version 8.4.9) via Cloud9, same technique as stage 09's `data.sql` |
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
 
 ## Stage 21, cost
