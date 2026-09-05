@@ -236,6 +236,7 @@ than a one-off anomaly or a timing issue on our part.
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
 | First backup upload | `cross-region-backup.sql` uploaded as `latest-backup.sql` (fixed key, so re-uploads create new versions rather than new objects) |
 | Second version confirmed | `latest-backup.sql` now has 2 versions: current (`eNNOHMFx8bgLB1djAo...`, 3.0 KB, 5 Sep 2026 08:37) and original (`DSIV_0.MxfDm0qVM...`, 2.9 KB, 5 Sep 2026 08:23). Second version created after adding a student record ("Ahmad Faiz bin Ismail") in the app and re-running the backup. |
+| Lifecycle rule | `age-out-old-backups`, Enabled, scope entire bucket, noncurrent versions: transition to Glacier Instant Retrieval after 7 days, permanently delete after 30 days |
 
 ## Stage 21, cost
 

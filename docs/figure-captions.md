@@ -495,6 +495,12 @@ Versions tab showing two versions: the original (2.9 KB, 5 Sep 2026 08:23) and a
 key. This is the feature's proof point — versioning is not just enabled, it visibly preserves a prior copy
 of genuinely different data rather than silently overwriting it.
 
+**Figure 64.** *(Evidence additional feature 2: backup versioning and lifecycle)* The `age-out-old-backups`
+lifecycle rule, Enabled, applied to the entire bucket: noncurrent versions transition to Glacier Instant
+Retrieval 7 days after becoming noncurrent, then are permanently deleted after 30 days. This completes the
+feature — the backup file is versioned, old versions are automatically moved to cheaper storage and then
+removed, and none of it depends on cross-region deployment.
+
 ---
 
 ## Note on the DB-SG screenshot

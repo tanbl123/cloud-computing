@@ -38,8 +38,8 @@ Repeated after changing data in the app (added a student record), to produce a g
 
 Console configuration:
 - Created bucket `asm-db-backups-401858547100` with Bucket Versioning **Enabled**
-- (Next) added a lifecycle rule on noncurrent versions: transition to a cheaper storage class after ~7
-  days, expire after ~30 days
+- Created lifecycle rule `age-out-old-backups` (entire bucket): noncurrent versions transition to
+  Glacier Instant Retrieval after 7 days, permanently deleted after 30 days
 
 Read-only permission checks used to investigate the cross-region block (worth mentioning as the
 investigation, not the deliverable):
