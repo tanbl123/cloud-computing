@@ -261,6 +261,7 @@ bonus/extra, not one of the required three.
 |---|---|
 | Read replica | `asm-rds-replica`, role Replica, source `asm-rds`, db.t3.micro, MySQL, us-east-1a, same region (not blocked by I-10/I-11, which only affect us-east-2), status Available |
 | Configuration choices | Single instance (no Multi-AZ on the replica), storage autoscaling max lowered from the 1000 GiB default to 50 GiB, Enhanced Monitoring disabled, deletion protection off — all to keep cost and complexity minimal |
+| Read replica endpoint | `asm-rds-replica.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306` |
 
 ## Stage 22, cost
 
