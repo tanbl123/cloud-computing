@@ -34,6 +34,9 @@
         <mxCell id="s3backups" value="&lt;b&gt;Amazon S3&lt;/b&gt;&lt;br&gt;asm-db-backups-&amp;lt;account-id&amp;gt;&lt;br&gt;versioned mysqldump backups&lt;br&gt;lifecycle: Glacier @7d, delete @30d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF6FB;strokeColor=#0073BB;strokeWidth=1.5;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="1190" y="578" width="215" height="86" as="geometry" />
         </mxCell>
+        <mxCell id="sns" value="&lt;b&gt;Amazon SNS (bonus)&lt;/b&gt;&lt;br&gt;Topic: asm-scaling-notifications&lt;br&gt;email subscription · stage 18&lt;br&gt;&lt;i&gt;too simple to count — not one of the 3&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDF0F7;strokeColor=#E7157B;dashed=1;strokeWidth=1.5;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="686" width="215" height="86" as="geometry" />
+        </mxCell>
 
         <!-- VPC -->
         <mxCell id="vpc" value="VPC  asm-VPC  ·  10.0.0.0/16  ·  DNS hostnames enabled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBF9FF;strokeColor=#8C4FFF;strokeWidth=2;fontSize=12.5;fontStyle=1;fontColor=#8C4FFF;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
@@ -131,11 +134,11 @@
         </mxCell>
 
         <!-- Legend -->
-        <mxCell id="legend" value="&lt;b&gt;How the requirements are met&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Highly available&lt;/b&gt;&lt;br&gt;Every tier in two AZs; ALB health checks replace failed instances automatically&lt;br&gt;&lt;br&gt;&lt;b&gt;Scalable&lt;/b&gt;&lt;br&gt;Target tracking adds capacity as average CPU rises past 50%&lt;br&gt;&lt;br&gt;&lt;b&gt;Secure&lt;/b&gt;&lt;br&gt;Database has no internet route; each tier accepts only the tier in front of it; no stored password&lt;br&gt;&lt;br&gt;&lt;b&gt;Cost optimised&lt;/b&gt;&lt;br&gt;Burstable instances, one NAT, ASG minimum set for resilience&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#01A88D&quot;&gt;Additional features (5 marks)&lt;/font&gt;&lt;/b&gt;&lt;br&gt;19: S3 backup versioning + lifecycle&lt;br&gt;20: Data-Server middle tier (proxy)&lt;br&gt;21: asm-rds-replica (read scaling)&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#C7442E&quot;&gt;Known limitations&lt;/font&gt;&lt;/b&gt;&lt;br&gt;RDS single-AZ (replica does not remove this — Multi-AZ blocked in this Lab, first prod. upgrade)&lt;br&gt;Data-Server has no ASG-style self-healing if it stops — fixed socat's persistence with systemd, but restart is still manual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#C7CDD3;strokeWidth=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;" vertex="1" parent="1">
+        <mxCell id="legend" value="&lt;b&gt;How the requirements are met&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Highly available&lt;/b&gt;&lt;br&gt;Every tier in two AZs; ALB health checks replace failed instances automatically&lt;br&gt;&lt;br&gt;&lt;b&gt;Scalable&lt;/b&gt;&lt;br&gt;Target tracking adds capacity as average CPU rises past 50%&lt;br&gt;&lt;br&gt;&lt;b&gt;Secure&lt;/b&gt;&lt;br&gt;Database has no internet route; each tier accepts only the tier in front of it; no stored password&lt;br&gt;&lt;br&gt;&lt;b&gt;Cost optimised&lt;/b&gt;&lt;br&gt;Burstable instances, one NAT, ASG minimum set for resilience&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#01A88D&quot;&gt;Additional features (5 marks)&lt;/font&gt;&lt;/b&gt;&lt;br&gt;19: S3 backup versioning + lifecycle&lt;br&gt;20: Data-Server middle tier (proxy)&lt;br&gt;21: asm-rds-replica (read scaling)&lt;br&gt;&lt;font color=&quot;#E7157B&quot;&gt;18: SNS notifications — bonus only&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#C7442E&quot;&gt;Known limitations&lt;/font&gt;&lt;/b&gt;&lt;br&gt;RDS single-AZ (replica does not remove this — Multi-AZ blocked in this Lab, first prod. upgrade)&lt;br&gt;Data-Server has no ASG-style self-healing if it stops — fixed socat's persistence with systemd, but restart is still manual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#C7CDD3;strokeWidth=1;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;" vertex="1" parent="1">
           <mxGeometry x="30" y="700" width="196" height="470" as="geometry" />
         </mxCell>
 
-        <mxCell id="footer" value="Build-SG, the temporary group used to reach instances during construction, was deleted after the build and is not part of the delivered architecture. SNS scaling notifications (stage 18) omitted — lecturer ruled it too simple to count, kept as a bonus not shown here." style="text;html=1;fontSize=9.5;fontColor=#8A94A0;align=left;" vertex="1" parent="1">
+        <mxCell id="footer" value="Build-SG, the temporary group used to reach instances during construction, was deleted after the build and is not part of the delivered architecture. SNS (dashed, pink) is shown as a bonus feature — the lecturer ruled it too simple to count as one of the three required additional features." style="text;html=1;fontSize=9.5;fontColor=#8A94A0;align=left;" vertex="1" parent="1">
           <mxGeometry x="30" y="1160" width="1400" height="30" as="geometry" />
         </mxCell>
 
@@ -183,6 +186,9 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e15" value="scaling + ReplicaLag metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#759C3E;strokeWidth=1.8;fontSize=9.5;fontColor=#759C3E;" edge="1" parent="1" source="asg" target="cloudwatch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" value="Launch/Terminate notifications (bonus)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E7157B;strokeWidth=1.6;dashed=1;fontSize=9;fontColor=#E7157B;" edge="1" parent="1" source="asg" target="sns">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 

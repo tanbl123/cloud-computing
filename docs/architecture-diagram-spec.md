@@ -48,6 +48,7 @@ showing that is what distinguishes an understood diagram from a copied one.
 | AWS WAF | at the ALB, **dashed outline** | designed but not deployed, lab restriction. Label it as such |
 | `Data-SG` security group + `Data-Server` EC2 | inside `asm-App-A` (same subnet as the app instances, not a new subnet tier) | t3.micro, `LabInstanceProfile` for Session Manager access (no SSH), runs `socat` as a persistent systemd service forwarding TCP 3306 to `asm-rds`. **Draw outside the `App-ASG` bracket** — it is a standalone instance, not part of the Auto Scaling group, and has no self-healing of its own |
 | `asm-rds-replica` | `asm-DB-A`, alongside `asm-rds` | db.t3.micro, Single-AZ, read replica of `asm-rds`, same region (stage 21) |
+| Amazon SNS | **outside the VPC**, regional, **dashed outline** | topic `asm-scaling-notifications`, email subscription, wired to `App-ASG`'s Activity notifications (stage 18). Draw it distinctly (dashed border, different colour) and label it "bonus" — it is built and worth writing up in the report, but the lecturer ruled it too simple to count as one of the three required additional features |
 
 **`Build-SG` does not appear.** It is deleted at stage 17 and is not part of the delivered
 architecture.
@@ -70,6 +71,7 @@ replica does not change this — it is also single-AZ, in `asm-DB-A` alongside t
 | VPC | Amazon S3 (`asm-flowlogs-*`) | VPC flow logs — corrected destination, was shown as CloudWatch Logs, now S3 (I-07) |
 | `App-ASG` / `asm-ALB` / `asm-rds-replica` | CloudWatch | metrics driving target tracking, plus `ReplicaLag` |
 | Cloud9 (or app tier) | S3 (`asm-db-backups-*`) | `mysqldump` backup upload, versioned, lifecycle to Glacier then deletion |
+| `App-ASG` | SNS (`asm-scaling-notifications`) | Activity notifications (Launch/Terminate/etc.) — dashed line, labelled "bonus" |
 
 **Arrow direction matters.** The app-to-NAT path is outbound only. Drawing it as bidirectional
 contradicts your own C5 claim that nothing reaches the private subnets from outside. The replication
