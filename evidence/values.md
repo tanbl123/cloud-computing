@@ -224,13 +224,15 @@ than a one-off anomaly or a timing issue on our part.
 | Real Launch notification received | 2026-09-04T23:14:47Z, `Event: autoscaling:EC2_INSTANCE_LAUNCH`, instance `i-0e38baf76d4eb9e29` (us-east-1b, subnet-0fb96b33f55918639). Cause: manual desired-capacity change from 2 to 3 at 23:14:36Z. |
 | Real Terminate notification received | 2026-09-04T23:22:36Z, `Event: autoscaling:EC2_INSTANCE_TERMINATE`, instance `i-0b4461f79eba3eade` (us-east-1b, subnet-0fb96b33f55918639 — same AZ/subnet as the Launch event's instance). Cause: manual desired-capacity change from 3 to 2 at 23:16:51Z. |
 
-## Stage 19, cross-region DB migration
+## Stage 19, backup versioning and lifecycle (was cross-region DB migration)
 
 | Item | Value |
 |---|---|
-| RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, MySQL 8.4.9, taken 5 Sep 2026 07:39 UTC+8, status Available |
-| Cross-region snapshot copy | Blocked — see issue I-10. `rds:CopyDBSnapshot` is not granted to this Lab identity at all (confirmed after routing around a separate KMS-alias-listing SCP block). Pivoted to manual mysqldump-and-restore into a new RDS instance created directly in us-east-2 (Ohio), the same technique used for the original stage 09 migration. |
-| Cross-region backup file | `cross-region-backup.sql`, 64 lines, dumped from `asm-rds` (database `STUDENTS`, server version 8.4.9) via Cloud9, same technique as stage 09's `data.sql` |
+| RDS snapshot | `asm-rds-migration-snapshot`, source `asm-rds`, MySQL 8.4.9, taken 5 Sep 2026 07:39 UTC+8, status Available (kept as evidence of the first attempt; not used further) |
+| Cross-region snapshot copy | Blocked — see issue I-10. `rds:CopyDBSnapshot` is not granted to this Lab identity at all. |
+| RDS instance creation in Ohio | Blocked — see issue I-11. `rds:DescribeDBInstances`/`DescribeDBClusters`/`DescribeGlobalClusters` all explicitly denied for us-east-2 resources by the same org-level SCP as I-10. |
+| S3 bucket creation in Ohio | Blocked — see issue I-11. `asm-db-backups-ohio-401858547100` failed to create: "the s3:CreateBucket permission is required." Confirms the restriction is not RDS-specific — resource creation outside us-east-1 is blocked account-wide for this Lab. |
+| Cross-region backup file | `cross-region-backup.sql`, 64 lines, dumped from `asm-rds` (database `STUDENTS`, server version 8.4.9) via Cloud9, same technique as stage 09's `data.sql`. Kept and reused as the backup file for the pivoted same-region feature below. |
 | S3 backup bucket | `asm-db-backups-401858547100` = `arn:aws:s3:::asm-db-backups-401858547100`, versioning Enabled, SSE-S3 encryption, Block Public Access on |
 
 ## Stage 21, cost

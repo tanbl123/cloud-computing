@@ -454,19 +454,35 @@ both directions of scaling, not just scale-up — deliberately included given st
 automatic scale-in is unusually slow, so being notified of terminate events (however triggered) has real
 operational value here.
 
-**Figure 59.** *(Evidence additional feature 2: cross-region DB migration)* The `asm-db-backups-401858547100`
-S3 bucket created for stage 19, with Bucket Versioning **Enabled** and default encryption. This bucket
-will hold a `mysqldump` export of `asm-rds`, re-uploaded under the same object key on each backup run so
-that Versioning preserves prior copies rather than silently overwriting them, paired with a lifecycle rule
-(added once the backup file exists) to age out old versions automatically. This is the S3 side of the
-feature; the RDS side — a manual snapshot copied to another region and restored — is documented in the
-figures that follow.
+**Figure 59.** *(Evidence additional feature 2: backup versioning and lifecycle)* The
+`asm-db-backups-401858547100` S3 bucket created for stage 19, with Bucket Versioning **Enabled** and
+default encryption. This bucket holds a `mysqldump` export of `asm-rds`, re-uploaded under the same object
+key on each backup run so that Versioning preserves prior copies rather than silently overwriting them,
+paired with a lifecycle rule to age out old versions automatically. This feature was originally scoped as
+cross-region DB migration; Figures 61 and 62 document why that was ruled out and replaced with this
+same-region backup strategy instead.
 
-**Figure 60.** *(Evidence additional feature 2: cross-region DB migration)* The `mysqldump` command run
-from Cloud9 against `asm-rds`, and its output confirming a valid 64-line backup file
-(`cross-region-backup.sql`) containing the `STUDENTS` database schema and data. This is the same technique
-used for the original stage 09 migration, reused here after issue I-10 ruled out AWS's native RDS
-cross-region snapshot copy for this Lab account.
+**Figure 60.** *(Evidence additional feature 2: backup versioning and lifecycle)* The `mysqldump` command
+run from Cloud9 against `asm-rds`, and its output confirming a valid 64-line backup file
+(`cross-region-backup.sql`) containing the `STUDENTS` database schema and data — the file this feature's
+S3 bucket now protects with versioning and a lifecycle policy.
+
+**Figure 61.** *(Evidence additional feature 2: backup versioning and lifecycle — investigation)* The RDS
+console's cross-region copy attempt, showing two stacked failures: first an "Error loading KMS Keys"
+(`kms:ListAliases` explicitly denied by an org-level Service Control Policy), then, after routing around
+that by entering a KMS key ARN directly, a harder failure — `rds:CopyDBSnapshot` denied outright because no
+identity-based policy grants it to this Lab account (issue I-10). Unlike I-07's trust-policy gap, this is a
+missing action with no workaround available to this identity.
+
+**Figure 62.** *(Evidence additional feature 2: backup versioning and lifecycle — investigation)* Two
+further attempts confirming the restriction is structural, not RDS-specific (issue I-11): switching the
+console to us-east-2 (Ohio) and opening RDS shows `DescribeDBInstances`, `DescribeDBClusters` and
+`DescribeGlobalClusters` all explicitly denied by the same Service Control Policy as Figure 61, and a
+completely unrelated action — creating a new S3 bucket in the same region — fails with "the s3:CreateBucket
+permission is required." Two different services, both blocked outside us-east-1, is strong evidence this
+Academy Lab account is restricted to its pinned region at the organization level, not that any one action
+happens to be missing. This is why the feature was rebuilt as same-region backup versioning and lifecycle
+management (Figures 59–60) rather than a genuine cross-region deployment.
 
 ---
 
