@@ -556,6 +556,14 @@ asynchronous replication on even a small db.t3.micro instance keeps up easily, w
 informative contrast to stage 16's finding that the compute tier (EC2/ALB) becomes the bottleneck well
 before the database replication layer does.
 
+## Stage 22 — Pricing Calculator (CO-1, CO-2)
+
+**Figure 75.** *(CO-1: cost estimate)* AWS Pricing Calculator, "My Estimate" summary page, us-east-1,
+12-month view. All 8 line items covering the final architecture: the App-ASG baseline (2x t3.micro),
+the Data-Server middle tier (1x t3.micro), both RDS instances (`asm-rds` primary and `asm-rds-replica`,
+both db.t3.micro Single-AZ), the ALB, the NAT Gateway, Secrets Manager, and the S3 backup bucket.
+Monthly cost $102.42, 12-month total $1,229.04.
+
 ---
 
 ## Note on the DB-SG screenshot

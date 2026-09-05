@@ -116,3 +116,19 @@ under peak load ("a database with a fixed, small connection ceiling cannot be re
 application servers in front of it"). A read replica is the natural next step for read scaling against
 that exact limitation — and the ReplicaLag result shows the database layer itself isn't where that
 bottleneck comes from, the compute tier is.
+
+## Stage 22 — Pricing Calculator (CO-1, CO-2)
+
+No code — AWS Pricing Calculator (calculator.aws), us-east-1, 12-month view. Eight line items priced to
+match the built architecture exactly:
+
+- App-ASG baseline: 2x t3.micro, Shared tenancy, On-Demand
+- Data-Server (middle tier): 1x t3.micro, Shared tenancy, On-Demand
+- asm-rds (primary): db.t3.micro, Single-AZ, 20 GiB gp3, no Proxy/Database Insights/Extended Support
+- asm-rds-replica: same spec as the primary, added as its own RDS line item
+- asm-alb: 1 Application Load Balancer
+- asm-NAT: 1 NAT Gateway, 10 GB/month processed
+- Mydbsecret: 1 secret in Secrets Manager
+- asm-db-backups bucket: S3 Standard, 1 GB
+
+Total: $102.42/month, $1,229.04 over 12 months. Exported as a file alongside the summary screenshot.

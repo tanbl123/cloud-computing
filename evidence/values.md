@@ -269,5 +269,26 @@ bonus/extra, not one of the required three.
 
 | Item | Value |
 |---|---|
-| 12-month estimate total | $ |
+| Monthly estimate total | $102.42 |
+| 12-month estimate total | $1,229.04 |
 | Budget consumed by the end | $ |
+
+AWS Pricing Calculator, us-east-1, 12-month view. Line items:
+
+| Service | Description | Monthly |
+|---|---|---|
+| Amazon EC2 | App-ASG baseline (2x t3.micro), Shared, On-Demand | $15.18 |
+| Amazon EC2 | Data-Server (middle tier, 1x t3.micro), Shared, On-Demand | $7.59 |
+| Amazon RDS for MySQL | asm-rds (primary), db.t3.micro, Single-AZ, 20 GiB gp3 | $14.71 |
+| Amazon RDS for MySQL | asm-rds-replica (read replica), db.t3.micro, Single-AZ, 20 GiB gp3 | $14.71 |
+| Elastic Load Balancing | asm-alb, Application Load Balancer | $16.51 |
+| Amazon VPC | asm-NAT, 1 NAT Gateway, 10 GB/month processed | $33.30 |
+| AWS Secrets Manager | Mydbsecret, 1 secret | $0.40 |
+| Amazon S3 | asm-db-backups bucket, S3 Standard, 1 GB | $0.02 |
+
+Note: the calculator's "Amazon VPC" NAT Gateway configuration page requires a value in a
+"Regional NAT Gateway" section (a newer, separate AWS NAT Gateway pricing tier not used in this build)
+before it allows saving, alongside the classic "Number of NAT Gateways" fields that match the real
+`asm-NAT`. Entering 0 in the Regional section's data-processed field satisfied validation without
+double-counting the gateway — the saved line item's $33.30/month matches the expected cost of a single
+classic NAT Gateway (~$32.85 hourly base + a small per-GB charge), confirming no duplicate billing.
