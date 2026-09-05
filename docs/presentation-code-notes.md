@@ -50,4 +50,32 @@ aws organizations describe-policy --policy-id p-cnlugp30
 aws organizations list-policies-for-target --target-id 401858547100 --filter SERVICE_CONTROL_POLICY
 ```
 
-## Stage 20 — middle-tier EC2 (to be filled in as we build it)
+## Stage 20 — middle-tier EC2
+
+Console configuration:
+- Created `Data-SG`: inbound TCP 3306 from `App-SG` only, outbound all traffic
+- Launched `Data-Server` (Ubuntu 24.04 LTS, t3.micro, `asm-App-A`, `Data-SG`, `LabInstanceProfile` for
+  Session Manager access, no public IP, no SSH key needed)
+- Edited `DB-SG`: removed the rule accepting `App-SG` directly, added one accepting `Data-SG` instead
+
+On Data-Server (via Session Manager, no SSH):
+```
+sudo apt update && sudo apt install -y socat
+sudo nohup socat TCP-LISTEN:3306,fork,reuseaddr TCP:asm-rds.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306 &
+```
+Verify with:
+```
+ps aux | grep socat
+```
+
+Point the app at the middle tier (no code or AMI changes needed, since the app reads its DB host from
+Secrets Manager at runtime):
+- Secrets Manager → `Mydbsecret` → Edit → changed `host` from the RDS endpoint to Data-Server's private
+  IP (`10.0.2.41`)
+
+Force the app tier to pick up the change:
+- Terminated both running `App-Instance` entries in EC2 → App-ASG launched two replacements
+  automatically (the same self-healing mechanism demonstrated in stage 16)
+
+Verification: browsed the ALB URL's `/students` page and confirmed the full list loaded correctly,
+proving the request path is now App instance → Data-Server (socat) → RDS.

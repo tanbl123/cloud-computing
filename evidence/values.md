@@ -249,6 +249,7 @@ than a one-off anomaly or a timing issue on our part.
 | socat forwarder confirmed running | `sudo nohup socat TCP-LISTEN:3306,fork,reuseaddr TCP:asm-rds.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306 &`, confirmed via `ps aux \| grep socat` (PIDs 877/878/879 on Data-Server) |
 | Mydbsecret host updated | Changed from the RDS endpoint to Data-Server's private IP (`10.0.2.41`); user/password/db unchanged |
 | App instances cycled | Terminated `i-02a5c41fba293c24c` and `i-077440bb16248b138`; App-ASG launched replacements `i-09a78a422f9306ec7` (us-east-1a) and `i-0457b5ba06997b445` (us-east-1b), both 3/3 healthy, booted with the updated secret |
+| End-to-end verification | ALB URL `/students` loads the full list correctly through App instance &rarr; Data-Server (socat) &rarr; RDS, with DB-SG no longer accepting App-SG directly. Middle tier confirmed working. |
 
 ## Stage 21, cost
 

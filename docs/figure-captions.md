@@ -501,6 +501,43 @@ Retrieval 7 days after becoming noncurrent, then are permanently deleted after 3
 feature — the backup file is versioned, old versions are automatically moved to cheaper storage and then
 removed, and none of it depends on cross-region deployment.
 
+**Figure 65.** *(Evidence additional feature 3: middle-tier EC2)* `Data-SG`, the new security group created
+for stage 20, showing its single inbound rule: TCP 3306 from `App-SG` only. This is the first half of the
+network change that inserts a middle tier between the application and the database, matching the
+web-server-to-web-server-to-database pattern from the MariaDB coursework this feature is based on.
+
+**Figure 66.** *(Evidence additional feature 3: middle-tier EC2)* `Data-Server` (`i-07ca44187584db64c`)
+running in `asm-App-A`, Ubuntu 24.04 LTS, `Data-SG` attached, `LabInstanceProfile` for Session Manager
+access, no public IP. This instance runs the forwarder that stands between the application tier and RDS.
+
+**Figure 67.** *(Evidence additional feature 3: middle-tier EC2)* `DB-SG`'s inbound rules after the change:
+the direct rule from `App-SG` has been removed and replaced with one from `Data-SG`. Combined with Figure
+65, this is the core of the feature — the application tier can no longer reach the database directly by any
+security-group path; every connection must pass through Data-Server.
+
+**Figure 68.** *(Evidence additional feature 3: middle-tier EC2)* `ps aux | grep socat` on Data-Server
+confirming the forwarder is actually running (`socat TCP-LISTEN:3306,fork,reuseaddr
+TCP:asm-rds....amazonaws.com:3306`), reachable via AWS Systems Manager Session Manager rather than SSH, so
+no inbound port 22 rule was needed on `Data-SG`.
+
+**Figure 69.** *(Evidence additional feature 3: middle-tier EC2)* `Mydbsecret`'s `host` field changed from
+the RDS endpoint to Data-Server's private IP (`10.0.2.41`). Because the application already reads its
+database host from this secret at runtime rather than from a hardcoded value or the AMI, this one edit is
+enough to redirect every future connection through the middle tier without touching the launch template,
+the AMI, or any application code.
+
+**Figure 70.** *(Evidence additional feature 3: middle-tier EC2)* `App-ASG`'s instance list after the two
+original App instances were manually terminated to force a refresh: two replacements launched
+automatically (the same self-healing behaviour demonstrated in stage 16), both passing 3/3 status checks.
+Being freshly booted, they fetch the updated secret and connect through Data-Server rather than to RDS
+directly.
+
+**Figure 71.** *(Evidence additional feature 3: middle-tier EC2)* The `/students` page loading correctly
+through the ALB after the migration, including the record added earlier for the S3 versioning
+demonstration ("Ahmad Faiz bin Ismail"). This is the end-to-end proof the feature actually works: the
+request path is now App instance &rarr; Data-Server (socat) &rarr; RDS, with `DB-SG` refusing any
+connection that does not originate from `Data-SG`.
+
 ---
 
 ## Note on the DB-SG screenshot
