@@ -247,6 +247,7 @@ than a one-off anomaly or a timing issue on our part.
 | Data-Server private IP | `10.0.2.41` |
 | DB-SG updated | App-SG rule removed; now accepts 3306 from Cloud9 SG and Data-SG only |
 | socat forwarder confirmed running | `sudo nohup socat TCP-LISTEN:3306,fork,reuseaddr TCP:asm-rds.ch9e5pk57w5b.us-east-1.rds.amazonaws.com:3306 &`, confirmed via `ps aux \| grep socat` (PIDs 877/878/879 on Data-Server) |
+| Mydbsecret host updated | Changed from the RDS endpoint to Data-Server's private IP (`10.0.2.41`); user/password/db unchanged |
 
 ## Stage 21, cost
 
