@@ -482,7 +482,12 @@ completely unrelated action — creating a new S3 bucket in the same region — 
 permission is required." Two different services, both blocked outside us-east-1, is strong evidence this
 Academy Lab account is restricted to its pinned region at the organization level, not that any one action
 happens to be missing. This is why the feature was rebuilt as same-region backup versioning and lifecycle
-management (Figures 59–60) rather than a genuine cross-region deployment.
+management (Figures 59–60) rather than a genuine cross-region deployment. A follow-up check — attempting to
+read the Service Control Policy itself via `aws organizations describe-policy`, and LabRole's own attached
+custom policies via `aws iam get-policy` — was denied both times, the second with "explicit deny in an
+identity-based policy." The Lab deliberately blocks introspection of its own permission boundaries, not
+just the boundaries themselves, so empirical testing (as done here) is the only way to discover what is and
+is not permitted.
 
 ---
 
